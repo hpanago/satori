@@ -33,7 +33,7 @@ if __name__ == "__main__" :
 	parser.add_argument( 'image', help = 'Set image filename. Default filename for this system is "%s.*"' % os_def_name, \
 									default = os_def_name, nargs = '?' )
 
-	parser.add_argument( '--type', '-t', help = 'Choose the file type of the images saved/loaded',\
+	parser.add_argument( '--type', '-t', help = 'Choose the file type of the images',\
 										type = str, choices = ['pickle', 'json', 'sqlite'], default = 'json')
 
 	parser.add_argument( '--no-gzip', '-ng', help = 'Image IO will *NOT* use gzip (larger but readable files)', action = 'store_true', default = False)
@@ -83,7 +83,7 @@ if __name__ == "__main__" :
 
 	elif args.type == 'sqlite' :	# TODO
 		exten = '.db'
-		
+
 
 	'''	================================================ COMPRESSION OPTION ================================================ '''
 
