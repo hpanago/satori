@@ -69,7 +69,7 @@ http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 
 
 
-def create_file_obj(full_path, name ) :
+def create_file_obj(full_path, name) :
 
 	full_name = os.path.join(full_path, name)
 

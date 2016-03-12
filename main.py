@@ -12,13 +12,13 @@ import lib.image_maker as maker
 import lib.image_differ as differ
 import lib.image_io as io
 import lib.image_meta as meta
-
+import lib.definitions as defs
 
 header = '''
-Welcome to Satori (悟り)
+Welcome to {0}
 OS filesystem image creator and difference finder
-Version {0}
-'''.format(meta.version)
+Version {1}
+'''.format(defs.program_name, defs.version)
 
 
 # import curses  # Get the module
@@ -44,21 +44,14 @@ __log = log.getLogger( __name__ )
 
 if __name__ == "__main__" :
 	os_def_name = plat.platform()
-	parser = argparse.ArgumentParser( prog = sys.argv[0], description = 'Diffs file system images of a live OSs with ones of fresh installation' )
+	parser = argparse.ArgumentParser( prog = sys.argv[0], description = 'Diffs file system images of live OSs with ones of fresh installation' )
 
 	utility = parser.add_mutually_exclusive_group()
-	utility.add_argument( '--image', help = 'Create an image file named "IMAGE"', default = '{0}.pkl'.format(os_def_name) )
-
+	utility.add_argument( '--image', help = 'Create an image file named "IMAGE"', default = os_def_name )
 	utility.add_argument( '--diff', help = 'Diff two filesystem images', nargs = 2, type = str, metavar = 'IMAGE' )
 
-	# data_type = parser.add_mutually_exclusive_group()
-	# data_type.add_argument( '--json', '-j', help = 'Image file is of JSON format', action = 'store_true' )
-	# data_type.add_argument( '--pickle', '-p', help = 'Image file is a python pickle', action = 'store_true' )
-	# data_type.add_argument( '--db', help = 'Image file is an sqlite db', action = 'store_true' )
-
-	file_type = parser.add_argument( '--type', '-t', help = 'Choose the file type of the images saved/loaded',\
+	parser.add_argument( '--type', '-t', help = 'Choose the file type of the images saved/loaded',\
 										type = str, choices = ['pickle', 'json', 'sqlite'], default = 'json')
-
 	parser.add_argument( '--default-name', help = 'Just print the default filename for this machine and exit', action = 'store_true' )
 
 	verb = parser.add_mutually_exclusive_group()
@@ -105,12 +98,11 @@ if __name__ == "__main__" :
 
 	if args.type == 'json' :
 		exten = '.jsn'
-		ftype = 'json'
+
 	elif args.type == 'sqlite' :
 		exten = '.db'
-		ftype = 'sqlite'
+
 	elif args.type == 'pickle' :
-		ftype = 'pickle'
 		exten = '.pkl'
 
 
@@ -129,8 +121,8 @@ if __name__ == "__main__" :
 
 
 	if args.diff != None :
-		image1 = io.loadImage( args.diff[0], ftype )
-		image2 = io.loadImage( args.diff[1], ftype )
+		image1 = io.loadImage( args.diff[0], args.type )
+		image2 = io.loadImage( args.diff[1], args.type )
 		differ.diffSystem( image1, image2 )
 		__log.warning( "\n" )
 		sys.exit()
@@ -139,4 +131,4 @@ if __name__ == "__main__" :
 	if args.image :
 		outfile = args.image + exten
 		fs = maker.create_Image( os_def_name )
-		io.saveImage( outfile, fs, ftype )
+		io.saveImage( outfile, fs, args.type )
