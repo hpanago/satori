@@ -40,6 +40,8 @@ meta_templates['date'] = "Created on '{0}'"
 meta_templates['original'] = "Original System Image:"
 meta_templates['subject'] = "Subject System Image:"
 
+
+
 def reportMeta(meta, original = False) :
 
 	__logger.info( '==================================================' )
@@ -106,7 +108,7 @@ def diffFile(file1, file2) :
 	if file1['type'] == 'directory' :
 
 		diffFolder( file1['content'], file2['content'] )
-#	for file in contents
+
 
 
 def diffFolder(folder1, folder2) :
@@ -130,6 +132,7 @@ def diffFolder(folder1, folder2) :
 	for key in (loc1 & loc2) :
 		diffFile( folder1[key], folder2[key] )
 	pass
+
 
 
 def diffSystem(sys1, sys2) :

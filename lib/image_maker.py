@@ -159,11 +159,12 @@ def create_Image(system_name = 'unknown') :
 	fsys['meta']['program'] = image_meta.program_name
 	fsys['meta']['version'] = image_meta.version	
 	fsys['meta']['system'] = system_name
-	fsys['meta']['date'] = date.today()
+	fsys['meta']['date'] = str(date.today())
 
 	for tag in creator_tags :
 		__logger.critical( creator_template[tag].format( fsys['meta'][tag] ) )
 #		__logger.warning( '\n' )
+
 	fsys['system'] = crawl_filesystem()
 
 	return fsys
