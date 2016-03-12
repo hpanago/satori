@@ -11,7 +11,7 @@ from datetime import date
 import logging as log
 
 # from image_meta import *
-import image_meta
+import definitions as defs
 
 
 excludes = set()
@@ -156,14 +156,17 @@ def create_Image(system_name = 'unknown') :
 	fsys = {}
 
 	fsys['meta'] = {}
-	fsys['meta']['program'] = image_meta.program_name
-	fsys['meta']['version'] = image_meta.version	
+	fsys['meta']['program'] = defs.program_name
+	fsys['meta']['version'] = defs.version	
 	fsys['meta']['system'] = system_name
 	fsys['meta']['date'] = str(date.today())
+	fsys['meta']['excludes'] = list(excludes)
 
-	for tag in creator_tags :
-		__logger.critical( creator_template[tag].format( fsys['meta'][tag] ) )
-#		__logger.warning( '\n' )
+
+	__logger.info( creator_template['system'].format( fsys['meta']['system'] ) )
+	__logger.info( "Excluded directories:" )
+	for dir in excludes :
+		__logger.info( "-> "+dir )
 
 	fsys['system'] = crawl_filesystem()
 

@@ -33,7 +33,7 @@ templates['SHA2']			= "%s has different hash. Original file's hash is '{1}' and 
 
 meta_templates = {}
 meta_templates['program'] = 'Created by {0}'
-meta_templates['version'] = 'Version {0}.'
+meta_templates['version'] = 'Image version {0}'
 meta_templates['system'] = "System string is '{0}'"
 meta_templates['date'] = "Created on '{0}'"
 

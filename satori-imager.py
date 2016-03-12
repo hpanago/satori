@@ -41,7 +41,7 @@ if __name__ == "__main__" :
 	verb = parser.add_mutually_exclusive_group()
 	verb.add_argument( '-v', '--verbose' , help = 'verbose mode', action = 'count', default = 0 )
 	verb.add_argument( '--debug' , '-d', help = 'debugging mode', action = 'store_true', default = False )
-	verb.add_argument( '--quiet', '-q' , help = 'quiet mode (show only critical differences)', action = 'store_true', default = False )
+	verb.add_argument( '--quiet', '-q' , help = 'quiet mode', action = 'store_true', default = False )
 
 
 	args = parser.parse_args()
@@ -92,7 +92,7 @@ if __name__ == "__main__" :
 	else :
 		__log.info( "Compression is Enabled!" )
 		io.__use_gzip = True
-		exten += '.gzip'
+		exten += '.gz'
 
 	outfile = (args.image + exten).replace(' ','_')
 

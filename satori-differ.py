@@ -26,18 +26,15 @@ __log = log.getLogger( __name__ )
 
 if __name__ == "__main__" :
 
-	os_def_name = plat.platform()
-
 	parser = argparse.ArgumentParser( description = 'Deeply diffs 2 satori Images' )
 
 	parser.add_argument( 'original', help = "Satori image to be treated as 'original'", type = str )
 	parser.add_argument( 'subject', help = "Satori image to be examined", type = str )
 
-
 	parser.add_argument( '--type', '-t', help = 'Choose the file type of the images saved/loaded',\
 										type = str, choices = ['pickle', 'json', 'sqlite'], default = 'json')
 
-	parser.add_argument( '--no-gzip', '-ng', help = 'Image IO will *NOT* use gzip (larger but readable files)', action = 'store_true', default = False)
+	parser.add_argument( '--no-gzip', '-ng', help = 'Image IO will *NOT* use gzip', action = 'store_true', default = False)
 
 	verb = parser.add_mutually_exclusive_group()
 	verb.add_argument( '-v', '--verbose' , help = 'verbose mode', action = 'count', default = 0 )
@@ -61,7 +58,6 @@ if __name__ == "__main__" :
 
 	elif args.verbose == 1 :
 		__log.setLevel( log.INFO )
-
 
 
 
