@@ -87,7 +87,7 @@ if __name__ == "__main__" :
 
 	__log.info(header)
 	if args.debug :
-		__log.debug("Debugging mode")
+		__log.debug("* Debugging mode *")
 	else :
 		__log.warning("Verbosity set to: %d" % args.verbose)
 

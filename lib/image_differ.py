@@ -57,7 +57,7 @@ def reportMeta(meta, original = False) :
 
 def reportDiff(entry, diff_type, f1 = '', f2 = '') :
 	'''		Reports the difference depending on its type	'''
-	__logger.debug( 'reportDiff( %s, %s, f1, f2)' % (entry, diff_type) )
+	__logger.debug( 'reportDiff( %s, %s, f1, f2 )' % (entry, diff_type) )
 
 
 	full_path = ( entry )
@@ -97,7 +97,7 @@ def diffFile(file1, file2) :
 		if file1[tag] == __NA :
 			continue
 		if file1[tag] != file2[tag] :
-			reportDiff (file2, tag, file1, file2)
+			reportDiff (file2['filename'], tag, file1, file2)
 			return 1
 
 	if file1['type'] == 'directory' :

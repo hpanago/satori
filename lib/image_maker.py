@@ -38,6 +38,8 @@ __ascii = False
 __hash = False
 __type = False
 
+
+
 def get_root_dir() :
 	""" http://stackoverflow.com/questions/12041525/a-system-independent-way-using-python-to-get-the-root-directory-drive-on-which-p """
 
@@ -66,19 +68,10 @@ http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 	return hasher.digest()
 
 
-def sec_open(path, op_str) :
-	try :
-		f = open(path, op_str)
-		return f
-	except :
-		pass
-
 
 def create_file_obj(full_path, name ) :
 
 	full_name = os.path.join(full_path, name)
-
-	# print full_name
 
 	if __type :
 		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()
@@ -87,7 +80,7 @@ def create_file_obj(full_path, name ) :
 		if mime == None :
 			mime = __NA
 
-	stat_obj = os.lstat(full_path)	# lstat instead of stat to NOT follow symlinks
+	stat_obj = os.lstat(full_name)	# lstat instead of stat to NOT follow symlinks
 
 	fobj = dict()
 
@@ -99,7 +92,7 @@ def create_file_obj(full_path, name ) :
 	fobj['privileges'] = str( oct( stat_obj[ST_MODE] ) )
 	fobj['type'] = mime
 	fobj['SHA2'] = __NA
-#	for exc in excludes :
+
 	if full_name in excludes :
 		return fobj
 
@@ -107,14 +100,10 @@ def create_file_obj(full_path, name ) :
 		return fobj
 
 	if os.path.isdir(full_name) :
-
 		fobj['type'] = 'directory'
 		fobj['content'] = crawl_folder (full_path, name, dict())
-#		print full_name
-
 
 	elif 'text' in mime and __ascii:
-
 		try :
 			f = open( full_name, 'r' )
 			fobj['content'] = f.read().strip()
@@ -136,6 +125,7 @@ def create_file_obj(full_path, name ) :
 	return fobj
 
 
+
 def crawl_folder(base, folder_path, fset) :
 
 	full_path = os.path.join( base, folder_path )
@@ -145,10 +135,11 @@ def crawl_folder(base, folder_path, fset) :
 			fobj = create_file_obj(full_path, file)
 			fset[ full_path + os.sep + file ] = fobj
 	except OSError :
-			__logger.info( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
+			__logger.warning( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
 
 
 	return fset
+
 
 
 def crawl_filesystem() :
@@ -175,9 +166,9 @@ def create_Image(system_name = 'unknown') :
 #		__logger.warning( '\n' )
 	fsys['system'] = crawl_filesystem()
 
-
-
 	return fsys
+
+
 
 if __name__ == "__main__" :
 
