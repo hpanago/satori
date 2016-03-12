@@ -1,3 +1,3 @@
 
-program_name = 'shatori main program'
+program_name = 'Satori main program'
 version = '0.01'

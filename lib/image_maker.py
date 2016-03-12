@@ -6,18 +6,33 @@ import mimetypes
 import hashlib
 from stat import *
 import os
+from datetime import date
+
+import logging as log
+
+# from image_meta import *
+import image_meta
 
 
 excludes = set()
 excludes.add('/proc')
+excludes.add('/run')
 excludes.add('/home')
 excludes.add('/sys')
 excludes.add('/root')
 excludes.add('/boot')
 excludes.add('/usr/src')
 
+__logger = log.getLogger( '__main__' )
 
 __NA = 'N/A'
+
+creator_tags = ['program', 'version', 'system']
+
+creator_template = {}
+creator_template['program'] = 'The image is made by {0}.'
+creator_template['version'] = 'Version: {0}'
+creator_template['system'] = 'Found system: {0}'
 
 __ascii = False
 __hash = False
@@ -129,9 +144,8 @@ def crawl_folder(base, folder_path, fset) :
 		for file in os.listdir(full_path) :
 			fobj = create_file_obj(full_path, file)
 			fset[ full_path + os.sep + file ] = fobj
-# 			print full_path + file
 	except OSError :
-			pass
+			__logger.info( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
 
 
 	return fset
@@ -140,21 +154,35 @@ def crawl_folder(base, folder_path, fset) :
 def crawl_filesystem() :
 
 	root = get_root_dir()
-
-#	root = '/home/john/'
-
-	ret = {}
 	ret = create_file_obj(root, '')
-	# crawl_folder(root, '', ret)
 	
 	return ret
 
 
 
+def create_Image(system_name = 'unknown') :
+
+	fsys = {}
+
+	fsys['meta'] = {}
+	fsys['meta']['program'] = image_meta.program_name
+	fsys['meta']['version'] = image_meta.version	
+	fsys['meta']['system'] = system_name
+	fsys['meta']['date'] = date.today()
+
+	for tag in creator_tags :
+		__logger.critical( creator_template[tag].format( fsys['meta'][tag] ) )
+#		__logger.warning( '\n' )
+	fsys['system'] = crawl_filesystem()
+
+
+
+	return fsys
 
 if __name__ == "__main__" :
 
-	fsys = crawl_filesystem()
+#	fsys = crawl_filesystem()
+
 	# f = open ('file_system.json', 'w')
 	# f.write( json.dumps( fsys, indent = 1 ) + '\n' )
 	f = open ('file_system_n.pkl', 'wb')

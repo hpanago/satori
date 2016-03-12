@@ -2,13 +2,13 @@
 import cPickle as pickle
 import json
 
-def loadImage(filename, type = 'pickle') :
+def loadImage(filename, type = 'pickle') :	# type = json | pickle | sqlite
 	infile = open(filename, 'r')
 	meth = pickle
 	if type == 'json' :
 		meth = json
 
-	meth.load ( infile )
+	return meth.load ( infile )
 
 
 def saveImage(filename, toSave, type = 'pickle') :
