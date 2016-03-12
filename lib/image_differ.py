@@ -24,23 +24,24 @@ templates[__non_exist] 		= "%s exists in the original but not in the given image
 templates[__not_original]	= "%s is not existent in the original image."	% __file_tmpl
 templates['content']		= "%s has different contents !" % __file_tmpl
 templates['type']			= "%s has different type. Original is {1} and given is {2} !" % __file_tmpl
-templates['size']			= "%s size differes. Original is of size {1} bytes and given is {2} !" % __file_tmpl
+templates['size']			= "%s size differs. Original is of size {1} bytes and given is {2} !" % __file_tmpl
 templates['privileges']		= "%s has different privileges! Originals are {1} and given are {2} !" % __file_tmpl
 templates['owner']			= "%s has different owner! Original owner is {1} and the file is owned by {2} !" % __file_tmpl
 templates['group']			= "%s has different group! Original group is {1} and the file's group is {2} !" % __file_tmpl
 templates['SHA2']			= "%s has different hash. Original file's hash is '{1}' and the file's hash is '{2}' !" % __file_tmpl
+
 
 meta_templates = {}
 meta_templates['program'] = 'Created by {0}'
 meta_templates['version'] = 'Version {0}.'
 meta_templates['system'] = "System string is '{0}'"
 meta_templates['date'] = "Created on '{0}'"
+
 meta_templates['original'] = "Original System Image:"
 meta_templates['subject'] = "Subject System Image:"
 
 def reportMeta(meta, original = False) :
 
-	# __logger.info( '\n' )
 	__logger.info( '==================================================' )
 	if original :
 		__logger.info( meta_templates['original'] )
@@ -53,6 +54,7 @@ def reportMeta(meta, original = False) :
 	__logger.info( meta_templates['date'].format( meta['date'] ) )
 	
 	__logger.info( '==================================================' )
+
 
 
 def reportDiff(entry, diff_type, f1 = '', f2 = '') :
@@ -90,14 +92,15 @@ def reportDiff(entry, diff_type, f1 = '', f2 = '') :
 
 def diffFile(file1, file2) :
 
-	__logger.debug( 'diffFile( %s, %s )' % ( file1['filename'], file2['filename'] ) )
+	# __logger.debug( 'diffFile( %s, %s )' % ( file1['filename'], file2['filename'] ) )
 
+	full_path = file1['path'] + os.sep + file1['filename']
 
 	for tag in tags[1:-1] :	# exclude content and HASH
 		if file1[tag] == __NA :
 			continue
 		if file1[tag] != file2[tag] :
-			reportDiff (file2['filename'], tag, file1, file2)
+			reportDiff (full_path, tag, file1, file2)
 			return 1
 
 	if file1['type'] == 'directory' :

@@ -53,11 +53,12 @@ if __name__ == "__main__" :
 	data_type.add_argument( '--pickle', '-p', help = 'Image file is a python pickle', action = 'store_true' )
 	data_type.add_argument( '--db', help = 'Image file is an sqlite db', action = 'store_true' )
 
-	parser.add_argument( '--default-name', '-d', help = 'Just print the default filename for this machine and exit', action = 'store_true' )
+	parser.add_argument( '--default-name', help = 'Just print the default filename for this machine and exit', action = 'store_true' )
 
 	verb = parser.add_mutually_exclusive_group()
 	verb.add_argument( '-v', '--verbose' , help = 'verbose mode', action = 'count', default = 0 )
-	verb.add_argument( '--debug' , help = 'debugging mode', action = 'store_true', default = False )
+	verb.add_argument( '--debug' , '-d', help = 'debugging mode', action = 'store_true', default = False )
+	verb.add_argument( '--quiet', '-q' , help = 'quiet mode (show only critical differences)', action = 'store_true', default = False )
 
 	args = parser.parse_args()
 
@@ -74,18 +75,17 @@ if __name__ == "__main__" :
 
 	if args.debug :
 		__log.setLevel( log.DEBUG )
+	elif args.quiet :
+		__log.setLevel( log.ERROR )
 
 	elif args.verbose == 0 :
 		__log.setLevel( log.WARNING )
 
 	elif args.verbose == 1 :
-		__log.setLevel( log.ERROR )
-
-	elif args.verbose == 2 :
 		__log.setLevel( log.INFO )
 
 
-	__log.info(header)
+	__log.warning(header)
 	if args.debug :
 		__log.debug("* Debugging mode *")
 	else :
