@@ -6,6 +6,7 @@ import hashlib
 from stat import *
 import os
 from datetime import date
+import multiprocessing as mproc
 
 import logging as log
 
@@ -31,10 +32,6 @@ creator_template = {}
 creator_template['program'] = 'The image is made by {0}.'
 creator_template['version'] = 'Version: {0}'
 creator_template['system'] = 'Found system: {0}'
-
-__text = False
-__type = False
-__hash = False
 
 __modes = []
 
@@ -74,7 +71,7 @@ def create_file_obj(full_path, name) :
 	__logger.debug( 'create_file_obj( %s )' % full_name )
 
 	if 'type' in __modes :
-		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()
+		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()	# main.py: Python script, ASCII text executable
 	else :
 		mime = mimetypes.guess_type( full_name )[0]
 		if mime == None :
@@ -101,7 +98,10 @@ def create_file_obj(full_path, name) :
 
 	if os.path.isdir(full_name) :
 		fobj['type'] = 'directory'
-		fobj['content'] = crawl_folder (full_path, name, dict())
+		# result = __pool.apply_async( crawl_folder, [ full_path, name, dict() ] )	# line to multithread
+		# fobj['content'] = result.get(timeout = 10)
+
+		fobj['content'] = crawl_folder (full_path, name, dict())	# line to multithread
 
 	elif 'text' in mime and 'text' in __modes:
 		try :
@@ -109,6 +109,7 @@ def create_file_obj(full_path, name) :
 			fobj['content'] = f.read().strip()
 			f.close()
 		except :
+			__logger.debug( "Exception while opening file '%s' for text reading!" % full_name )
 			pass
 
 	else :
@@ -120,6 +121,7 @@ def create_file_obj(full_path, name) :
 				fobj['SHA2'] = hashfile(f, hashlib.sha256())
 				f.close()
 			except :
+				__logger.debug( "Exception while opening file '%s' for hashing!" % full_name )
 				pass
 
 	return fobj
@@ -131,9 +133,18 @@ def crawl_folder(base, folder_path, fset) :
 	full_path = os.path.join( base, folder_path )
 
 	try : 
+		to_map = []
 		for file in os.listdir(full_path) :
+
+		# 	argum = (full_path, file)
+		# 	to_map.append( argum )
+		# __pool.map( create_file_obj, to_map )
+
 			fobj = create_file_obj(full_path, file)
 			fset[ full_path + os.sep + file ] = fobj
+
+
+
 	except OSError :
 			__logger.warning( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
 
@@ -149,6 +160,7 @@ def crawl_filesystem() :
 	
 	return ret
 
+__pool = mproc.Pool()
 
 
 def create_Image(system_name = 'unknown') :
@@ -168,7 +180,12 @@ def create_Image(system_name = 'unknown') :
 	for dir in excludes :
 		__logger.info( "-> "+dir )
 
+
+
 	fsys['system'] = crawl_filesystem()
+
+	__pool.close()
+	__pool.join()
 
 	return fsys
 

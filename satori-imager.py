@@ -45,10 +45,10 @@ if __name__ == "__main__" :
 
 	deepness = parser.add_mutually_exclusive_group()
 	deepness.add_argument( '--filetypes', help = "Try to guess filetypes with mimes and 'file' command (slower)", action = 'store_true', default = False )
-	deepness.add_argument( '--text', help = "Guess file types and save all text contents of a file in the image (really useful for config files)",\
+	deepness.add_argument( '--text', help = "Guess file types and save all text contents of a file in the image (very slow! Useful for config files)",\
 							action = 'store_true', default = False )
 
-	parser.add_argument( '--hash', help = "Calculate and store the SHA-256 of every file in the image (really slow)", action = 'store_true', default = False )
+	parser.add_argument( '--hash', help = "Calculate and store the SHA-256 of every file in the image (slower)", action = 'store_true', default = False )
 
 
 	args = parser.parse_args()
