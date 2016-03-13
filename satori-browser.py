@@ -36,4 +36,27 @@ if __name__ == "__main__" :
 	args = parser.parse_args()
 
 
-	
+
+	'''	================================================ HEADER + INFO ================================================ '''
+
+	__log.warning(header)
+
+
+	'''	================================================ COMPRESSION OPTION ================================================ '''
+
+	if args.no_gzip :
+		__log.info( "* Compression is Disabled! *" )
+	else :
+		__log.info( "Compression is Enabled!" )
+		io.__use_gzip = True
+
+	print 'Loading Image...'
+	image = io.loadImage( args.image, args.type )
+
+	print 'Ready!'
+
+
+	while True :
+		inp = raw_input ( '%s $ ' % 'satori' )
+		if inp == 'exit' :
+			break

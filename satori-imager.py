@@ -34,14 +34,21 @@ if __name__ == "__main__" :
 									default = os_def_name, nargs = '?' )
 
 	parser.add_argument( '--type', '-t', help = 'Choose the file type of the images',\
-										type = str, choices = ['pickle', 'json', 'sqlite'], default = 'json')
+										type = str, choices = ['pickle', 'json', 'sqlite'], default = 'json' )
 
-	parser.add_argument( '--no-gzip', '-ng', help = 'Image IO will *NOT* use gzip (larger but readable files)', action = 'store_true', default = False)
+	parser.add_argument( '--no-gzip', '-ng', help = 'Image IO will *NOT* use gzip (larger but readable files)', action = 'store_true', default = False )
 
 	verb = parser.add_mutually_exclusive_group()
-	verb.add_argument( '-v', '--verbose' , help = 'verbose mode', action = 'count', default = 0 )
+	verb.add_argument( '--verbose', '-v' , help = 'verbose mode', action = 'count', default = 0 )
 	verb.add_argument( '--debug' , '-d', help = 'debugging mode', action = 'store_true', default = False )
 	verb.add_argument( '--quiet', '-q' , help = 'quiet mode', action = 'store_true', default = False )
+
+	deepness = parser.add_mutually_exclusive_group()
+	deepness.add_argument( '--filetypes', help = "Try to guess filetypes with mimes and 'file' command (slower)", action = 'store_true', default = False )
+	deepness.add_argument( '--text', help = "Guess file types and save all text contents of a file in the image (really useful for config files)",\
+							action = 'store_true', default = False )
+
+	parser.add_argument( '--hash', help = "Calculate and store the SHA-256 of every file in the image (really slow)", action = 'store_true', default = False )
 
 
 	args = parser.parse_args()
@@ -85,6 +92,24 @@ if __name__ == "__main__" :
 		exten = '.db'
 
 
+	'''	================================================ DEEPNESS OPTION ================================================ '''
+
+	if args.filetypes :
+		# maker.__type = True
+		maker.__modes.append( 'type' )
+	elif args.text :
+		# maker.__text = True
+		# maker.__type = True
+		maker.__modes.append( 'type' )
+		maker.__modes.append( 'text' )
+
+	if args.hash :
+		# maker.__hash = True
+		maker.__modes.append( 'hash' )
+
+
+
+
 	'''	================================================ COMPRESSION OPTION ================================================ '''
 
 	if args.no_gzip :
@@ -100,4 +125,5 @@ if __name__ == "__main__" :
 	__log.info('')
 
 	fs = maker.create_Image( os_def_name )
+	__log.info( 'Image generated! Creating File...' )
 	io.saveImage( outfile, fs, args.type )

@@ -1,7 +1,6 @@
 
 import sys
 import json
-import cPickle as pickle
 import mimetypes
 import hashlib
 from stat import *
@@ -10,7 +9,6 @@ from datetime import date
 
 import logging as log
 
-# from image_meta import *
 import definitions as defs
 
 
@@ -34,10 +32,11 @@ creator_template['program'] = 'The image is made by {0}.'
 creator_template['version'] = 'Version: {0}'
 creator_template['system'] = 'Found system: {0}'
 
-__ascii = False
-__hash = False
+__text = False
 __type = False
+__hash = False
 
+__modes = []
 
 
 def get_root_dir() :
@@ -72,8 +71,9 @@ http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 def create_file_obj(full_path, name) :
 
 	full_name = os.path.join(full_path, name)
+	__logger.debug( 'create_file_obj( %s )' % full_name )
 
-	if __type :
+	if 'type' in __modes :
 		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()
 	else :
 		mime = mimetypes.guess_type( full_name )[0]
@@ -103,7 +103,7 @@ def create_file_obj(full_path, name) :
 		fobj['type'] = 'directory'
 		fobj['content'] = crawl_folder (full_path, name, dict())
 
-	elif 'text' in mime and __ascii:
+	elif 'text' in mime and 'text' in __modes:
 		try :
 			f = open( full_name, 'r' )
 			fobj['content'] = f.read().strip()
@@ -114,7 +114,7 @@ def create_file_obj(full_path, name) :
 	else :
 		fobj['content'] = __NA
 
-		if __hash :
+		if 'hash' in __modes :
 			try :
 				f = open( full_name, 'rb' )
 				fobj['SHA2'] = hashfile(f, hashlib.sha256())
@@ -161,7 +161,7 @@ def create_Image(system_name = 'unknown') :
 	fsys['meta']['system'] = system_name
 	fsys['meta']['date'] = str(date.today())
 	fsys['meta']['excludes'] = list(excludes)
-
+	fsys['meta']['modes'] = __modes
 
 	__logger.info( creator_template['system'].format( fsys['meta']['system'] ) )
 	__logger.info( "Excluded directories:" )
@@ -174,14 +174,11 @@ def create_Image(system_name = 'unknown') :
 
 
 
-if __name__ == "__main__" :
+if __name__ == "__main__" :		# TODO standalone module
 
-#	fsys = crawl_filesystem()
-
-	# f = open ('file_system.json', 'w')
-	# f.write( json.dumps( fsys, indent = 1 ) + '\n' )
-	f = open ('file_system_n.pkl', 'wb')
-	f.write( pickle.dumps( fsys ) )
-
+	import platform
+	fsys = crawl_filesystem(platform.platform())
+	import gzip
+	f = gzip.open ('file_system.jsn.gz', 'wb')
+	f.write( json.dumps( fsys ) )
 	f.close()
-#	print fsys
