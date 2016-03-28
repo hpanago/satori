@@ -45,6 +45,27 @@ __modes = []
 
 __threads = 1
 
+__crawling_done = False
+queue = Queue()
+
+def thread_worker( id ) :
+
+	while not __crawling_done :
+		try :
+			task = queue.get_nowait()
+		except :
+			continue
+		full_path, name, ret, folder = task
+
+		key = full_path + os.sep + name 
+
+		crawl_folder( full_path, name, ret )
+
+		folder[ key ] = ret
+
+		queue.task_done()
+	__logger.debug( 'Thread %d stopped gracefully!' % id )
+
 
 def get_root_dir() :
 	""" http://stackoverflow.com/questions/12041525/a-system-independent-way-using-python-to-get-the-root-directory-drive-on-which-p """
@@ -106,7 +127,21 @@ def create_file_obj(full_path, name, fobj) :
 
 	if os.path.isdir(full_name) :
 		fobj['type'] = 'directory'
-		fobj['content'] = crawl_folder (full_path, name, dict())	# line to multithread
+		ret = dict()
+		fobj['content'] = dict()
+		args = (full_path, name, ret, fobj['content'])
+		queue.put(args)
+
+		# if thrd.active_count() < __threads :
+		# 	# print "++++ CREATING THREAD +++++ %d/%d" % (thrd.active_count(), __threads) 
+		# 	t = thrd.Thread( target = crawl_folder, args = (full_path, name, ret) )	# line to multithread
+		# 	t.start()
+	
+		# 	t.join()
+		# else :
+		# 	crawl_folder (full_path, name, ret)	# line to multithread
+
+		# fobj['content'] = ret
 
 	elif 'text' in mime and 'text' in __modes:
 		try :
@@ -158,12 +193,25 @@ def crawl_folder(base, folder_path, fset) :
 
 
 
+
+
+
 def crawl_filesystem() :
+
+	threads = []
+	for i in range(__threads) :
+		t = thrd.Thread( target = thread_worker, args = (i,) )
+		t.daemon = True
+		t.start()
 
 	root = get_root_dir()
 	ret = dict()
 	create_file_obj(root, '', ret)
-	
+
+	__crawling_done = True
+	queue.join()
+
+
 	return ret
 
 
@@ -184,8 +232,6 @@ def create_Image(system_name = 'unknown') :
 	__logger.info( "Excluded directories:" )
 	for dir in excludes :
 		__logger.info( "-> "+dir )
-
-
 
 	fsys['system'] = crawl_filesystem()
 

@@ -12,6 +12,11 @@ import lib.definitions as defs
 
 import lib.helpers.signal_handler
 
+import signal
+import sys
+def signal_handler(signal, frame):
+        sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)
 
 
 header = '''
@@ -53,7 +58,7 @@ if __name__ == "__main__" :
 
 	parser.add_argument( '--hash', help = "Calculate and store the SHA-256 of every file in the image (slower)", action = 'store_true', default = False )
 
-	parser.add_argument( '--threads', help = 'Use threads to create the Filesystem Image, good for multiple IO calls', type = int, default = 1 )
+	parser.add_argument( '--threads', help = 'Use threads to create the Filesystem Image (good for multiple IO calls)', type = int, default = 1 )
 
 	args = parser.parse_args()
 
@@ -122,6 +127,11 @@ if __name__ == "__main__" :
 		__log.info( "Compression is Enabled!" )
 		io.__use_gzip = True
 		exten += '.gz'
+
+
+	maker.__threads = args.threads
+
+
 
 	outfile = (args.image + exten).replace(' ','_')
 
