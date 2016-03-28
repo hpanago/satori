@@ -1,5 +1,4 @@
-import cPickle as pickle
-import json
+#-*- coding: utf-8 -*-
 import os
 
 import difflib
@@ -147,15 +146,3 @@ def diffSystem(sys1, sys2) :
 	sys1 = sys1['system']
 	sys2 = sys2['system']
 	diffFile(sys1, sys2)
-
-
-
-if __name__ == '__main__' :
-	import sys
-	f1 = open( sys.argv[1], 'r' )
-	f2 = open( sys.argv[2], 'r' )
-	
-	sys1 = pickle.load(f1)
-	sys2 = pickle.load(f2)
-	
-	diffSystem(sys1, sys2)

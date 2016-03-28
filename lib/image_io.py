@@ -1,4 +1,4 @@
-
+#-*- coding: utf-8 -*-
 import cPickle as pickle
 import json
 

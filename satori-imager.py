@@ -10,6 +10,9 @@ import lib.image_maker as maker
 import lib.image_io as io
 import lib.definitions as defs
 
+import lib.helpers.signal_handler
+
+
 
 header = '''
 Welcome to {0} Imager
@@ -125,5 +128,5 @@ if __name__ == "__main__" :
 	__log.info('')
 
 	fs = maker.create_Image( os_def_name )
-	__log.info( 'Image generated! Creating File...' )
+	__log.warning( 'Image generated! Creating File...' )
 	io.saveImage( outfile, fs, args.type )

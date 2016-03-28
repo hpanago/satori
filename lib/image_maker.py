@@ -1,4 +1,4 @@
-
+#-*- coding: utf-8 -*-
 import sys
 import json
 import mimetypes
@@ -6,11 +6,18 @@ import hashlib
 from stat import *
 import os
 from datetime import date
-import multiprocessing as mproc
+
+# import multiprocessing as mproc
+import threading as thrd
+from multiprocessing.pool import ThreadPool
+from Queue import Queue
 
 import logging as log
 
 import definitions as defs
+
+import helpers.signal_handler
+
 
 
 excludes = set()
@@ -20,6 +27,7 @@ excludes.add('/home')
 excludes.add('/sys')
 excludes.add('/root')
 excludes.add('/boot')
+excludes.add('/media')
 excludes.add('/usr/src')
 
 __logger = log.getLogger( '__main__' )
@@ -108,8 +116,8 @@ def create_file_obj(full_path, name) :
 			f = open( full_name, 'r' )
 			fobj['content'] = f.read().strip()
 			f.close()
-		except :
-			__logger.debug( "Exception while opening file '%s' for text reading!" % full_name )
+		except Exception as e :
+			__logger.debug( "'%s' while opening file '%s' for text reading!" % (str(e),full_name) )
 			pass
 
 	else :
@@ -120,8 +128,8 @@ def create_file_obj(full_path, name) :
 				f = open( full_name, 'rb' )
 				fobj['SHA2'] = hashfile(f, hashlib.sha256())
 				f.close()
-			except :
-				__logger.debug( "Exception while opening file '%s' for hashing!" % full_name )
+			except Exception as e :
+				__logger.debug( "'%s' while opening file '%s' for hashing!" % (str(e),full_name) )
 				pass
 
 	return fobj
@@ -133,20 +141,33 @@ def crawl_folder(base, folder_path, fset) :
 	full_path = os.path.join( base, folder_path )
 
 	try : 
-		to_map = []
+		to_map = Queue()
+		threads = []
+		results = []
+
 		for file in os.listdir(full_path) :
 
-		# 	argum = (full_path, file)
-		# 	to_map.append( argum )
-		# __pool.map( create_file_obj, to_map )
+			argum = ( full_path, file )
+			key = full_path + os.sep + file 
+			# to_map.add( argum )
 
-			fobj = create_file_obj(full_path, file)
-			fset[ full_path + os.sep + file ] = fobj
+			# print 'working on %s' % file
+			async_result = pool.apply_async( create_file_obj, argum)
+			results.append( ( key, async_result, argum ) )
 
+			# fobj = create_file_obj(full_path, file)
+
+
+		for res in results :
+
+			try :
+				fset[ res[0] ] = res[1].get( timeout = 0.5 )
+			except :
+				fset[ res[0] ] = create_file_obj( *res[2] )
 
 
 	except OSError :
-			__logger.warning( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
+			__logger.info( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
 
 
 	return fset
@@ -160,7 +181,6 @@ def crawl_filesystem() :
 	
 	return ret
 
-__pool = mproc.Pool()
 
 
 def create_Image(system_name = 'unknown') :
@@ -184,11 +204,12 @@ def create_Image(system_name = 'unknown') :
 
 	fsys['system'] = crawl_filesystem()
 
-	__pool.close()
-	__pool.join()
-
 	return fsys
 
+
+
+
+pool = ThreadPool( processes = 1 )
 
 
 if __name__ == "__main__" :		# TODO standalone module
