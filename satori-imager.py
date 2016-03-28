@@ -53,6 +53,7 @@ if __name__ == "__main__" :
 
 	parser.add_argument( '--hash', help = "Calculate and store the SHA-256 of every file in the image (slower)", action = 'store_true', default = False )
 
+	parser.add_argument( '--threads', help = 'Use threads to create the Filesystem Image, good for multiple IO calls', type = int, default = 1 )
 
 	args = parser.parse_args()
 

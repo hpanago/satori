@@ -43,6 +43,8 @@ creator_template['system'] = 'Found system: {0}'
 
 __modes = []
 
+__threads = 1
+
 
 def get_root_dir() :
 	""" http://stackoverflow.com/questions/12041525/a-system-independent-way-using-python-to-get-the-root-directory-drive-on-which-p """
@@ -58,7 +60,7 @@ def get_root_dir() :
 
 
 
-def hashfile(afile, hasher, blocksize=65536):
+def hashfile(afile, hasher, blocksize = 65536):
 	'''
 http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 	'''
@@ -73,21 +75,19 @@ http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 
 
 
-def create_file_obj(full_path, name) :
+def create_file_obj(full_path, name, fobj) :
 
 	full_name = os.path.join(full_path, name)
 	__logger.debug( 'create_file_obj( %s )' % full_name )
 
 	if 'type' in __modes :
-		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()	# main.py: Python script, ASCII text executable
+		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()	# main.py: Python script, ASCII text executable		# sample output
 	else :
 		mime = mimetypes.guess_type( full_name )[0]
 		if mime == None :
 			mime = __NA
 
 	stat_obj = os.lstat(full_name)	# lstat instead of stat to NOT follow symlinks
-
-	fobj = dict()
 
 	fobj['filename'] = name
 	fobj['path'] = full_path
@@ -106,9 +106,6 @@ def create_file_obj(full_path, name) :
 
 	if os.path.isdir(full_name) :
 		fobj['type'] = 'directory'
-		# result = __pool.apply_async( crawl_folder, [ full_path, name, dict() ] )	# line to multithread
-		# fobj['content'] = result.get(timeout = 10)
-
 		fobj['content'] = crawl_folder (full_path, name, dict())	# line to multithread
 
 	elif 'text' in mime and 'text' in __modes:
@@ -147,28 +144,15 @@ def crawl_folder(base, folder_path, fset) :
 
 		for file in os.listdir(full_path) :
 
-			argum = ( full_path, file )
 			key = full_path + os.sep + file 
-			# to_map.add( argum )
+			ret = dict()
 
-			# print 'working on %s' % file
-			async_result = pool.apply_async( create_file_obj, argum)
-			results.append( ( key, async_result, argum ) )
-
-			# fobj = create_file_obj(full_path, file)
-
-
-		for res in results :
-
-			try :
-				fset[ res[0] ] = res[1].get( timeout = 0.5 )
-			except :
-				fset[ res[0] ] = create_file_obj( *res[2] )
+			create_file_obj(full_path, file, ret)
+			fset[ key ] = ret
 
 
 	except OSError :
 			__logger.info( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
-
 
 	return fset
 
@@ -177,7 +161,8 @@ def crawl_folder(base, folder_path, fset) :
 def crawl_filesystem() :
 
 	root = get_root_dir()
-	ret = create_file_obj(root, '')
+	ret = dict()
+	create_file_obj(root, '', ret)
 	
 	return ret
 
@@ -206,10 +191,6 @@ def create_Image(system_name = 'unknown') :
 
 	return fsys
 
-
-
-
-pool = ThreadPool( processes = 1 )
 
 
 if __name__ == "__main__" :		# TODO standalone module
