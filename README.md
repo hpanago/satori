@@ -8,6 +8,9 @@ Satori has 3 basic tools:
   
 Satori Imager creates images of your File System saving key elements for its file like filename(duh!), privileges, size, type, and maybe content and hash.
 
+
+
+
 usage: satori-imager.py [-h] [--type {pickle,json,sqlite}] [--no-gzip]
                         [--verbose | --debug | --quiet] [--filetypes | --text]
                         [--hash] [--threads THREADS]
@@ -37,3 +40,7 @@ optional arguments:
                         image (slower)
   --threads THREADS     Use threads to create the Filesystem Image (good for
                         multiple IO calls)
+
+
+
+
