@@ -39,7 +39,6 @@ optional arguments:
                         image (slower)
   --threads THREADS     Use threads to create the Filesystem Image (good for
                         multiple IO calls)
-
 </code>
 
 
