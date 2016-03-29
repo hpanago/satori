@@ -15,10 +15,6 @@ import lib.helpers.signal_handler
 import signal
 import sys
 
-def signal_handler2(signal, frame):
-	sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler2)
 
 
 header = '''
@@ -60,7 +56,8 @@ if __name__ == "__main__" :
 
 	parser.add_argument( '--hash', help = "Calculate and store the SHA-256 of every file in the image (slower)", action = 'store_true', default = False )
 
-	parser.add_argument( '--threads', help = 'Use threads to create the Filesystem Image (good for multiple IO calls)', type = int, default = 1 )
+	parser.add_argument( '--threads', help = 'Use threads to create the Filesystem Image (good for multiple IO calls)',\
+							 type = int, default = 1 )
 
 	args = parser.parse_args()
 
@@ -87,6 +84,7 @@ if __name__ == "__main__" :
 	__log.warning(header)
 	if args.debug :
 		__log.debug("* Debugging mode *")
+
 	else :
 		__log.warning("Verbosity set to: %d" % args.verbose)
 
@@ -106,16 +104,13 @@ if __name__ == "__main__" :
 	'''	================================================ DEEPNESS OPTION ================================================ '''
 
 	if args.filetypes :
-		# maker.__type = True
 		maker.__modes.append( 'type' )
+
 	elif args.text :
-		# maker.__text = True
-		# maker.__type = True
 		maker.__modes.append( 'type' )
 		maker.__modes.append( 'text' )
 
 	if args.hash :
-		# maker.__hash = True
 		maker.__modes.append( 'hash' )
 
 
@@ -125,12 +120,16 @@ if __name__ == "__main__" :
 
 	if args.no_gzip :
 		__log.info( "* Compression is Disabled! *" )
+
 	else :
 		__log.info( "Compression is Enabled!" )
 		io.__use_gzip = True
 		exten += '.gz'
 
 
+	if args.threads < 1 or args.threads > 64 :
+		__log.info( "* Thread number incorrect! Using single-threading. *" )
+		args.threads = 1
 	maker.__threads = args.threads
 
 

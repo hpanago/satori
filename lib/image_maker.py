@@ -11,6 +11,7 @@ from datetime import date
 import threading as thrd
 from multiprocessing.pool import ThreadPool
 from Queue import Queue
+from time import sleep
 
 import logging as log
 
@@ -55,6 +56,7 @@ def thread_worker( id ) :
 		try :
 			task = queue.get_nowait()
 		except :
+			sleep(0.1)
 			continue
 		full_path, name, ret, folder = task
 
@@ -62,7 +64,8 @@ def thread_worker( id ) :
 
 		crawl_folder( full_path, name, ret )
 
-		folder[ key ] = ret
+		folder[ 'content' ] = ret
+		# folder[ key ] = ret
 
 		queue.task_done()
 
@@ -128,8 +131,8 @@ def create_file_obj(full_path, name, fobj) :
 	if os.path.isdir(full_name) :
 		fobj['type'] = 'directory'
 		ret = dict()
-		fobj['content'] = dict()
-		args = (full_path, name, ret, fobj['content'])
+		# fobj['content'] = dict()
+		args = (full_path, name, ret, fobj)
 		queue.put(args)
 
 		# if thrd.active_count() < __threads :
@@ -204,7 +207,7 @@ def crawl_filesystem() :
 
 	root = get_root_dir()
 	ret = dict()
-	create_file_obj(root, '', ret)
+	create_file_obj('', root, ret)
 
 	__crawling_done = True
 	queue.join()

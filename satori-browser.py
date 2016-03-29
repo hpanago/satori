@@ -6,10 +6,13 @@ import lib.image_io as io
 import logging as log
 
 import lib.definitions as defs
+from lib.image_browser import *
+
+import lib.helpers.signal_handler
 
 
 header = '''
-Welcome to {0} Differ
+Welcome to {0} Browser
 OS filesystem image Browser
 Version {1}
 '''.format(defs.program_name, defs.version)
@@ -52,11 +55,13 @@ if __name__ == "__main__" :
 
 	print 'Loading Image...'
 	image = io.loadImage( args.image, args.type )
+	# image = None
+	print
+	# print 'Ready!'
 
-	print 'Ready!'
-
-
-	while True :
-		inp = raw_input ( '%s $ ' % 'satori' )
-		if inp == 'exit' :
-			break
+	satori_shell = SatoriShell(image)
+	satori_shell.cmdloop(  )
+	# while True :
+	# 	inp = raw_input ( '%s $ ' % 'satori' )
+	# 	if inp == 'exit' :
+	# 		break
