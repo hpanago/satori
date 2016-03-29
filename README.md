@@ -1,5 +1,9 @@
-# satori
-A filesystem image suite
+# satori (悟り)
+A 'forensic oriented' filesystem image suite!
+
+"Satori" is a Japanese Buddhist term for awakening, "comprehension; understanding" [...] enlightment. (en.wikipedia.org/wiki/Satori)
+
+It is named after the 
 
 Satori has 3 basic tools:
 <br>satori-imager</br>
