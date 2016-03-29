@@ -4,6 +4,7 @@ import os
 import difflib
 import logging as log
 
+# from lib.definitions import meta_templates
 
 tags = [ 'content', 'path', 'filename', 'type', 'size', 'privileges', 'owner', 'group', 'SHA2' ]
 criticals = tags[5 : 7]

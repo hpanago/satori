@@ -5,6 +5,7 @@ import mimetypes
 import hashlib
 from stat import *
 import os
+import socket
 from datetime import date
 
 # import multiprocessing as mproc
@@ -183,8 +184,8 @@ def crawl_folder(base, folder_path, fset) :
 			ret = dict()
 
 			create_file_obj(full_path, file, ret)
-			fset[ key ] = ret
-
+			# fset[ key ] = ret
+			fset[ file ] = ret
 
 	except OSError :
 			__logger.info( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
@@ -228,6 +229,10 @@ def create_Image(system_name = 'unknown') :
 	fsys['meta']['date'] = str(date.today())
 	fsys['meta']['excludes'] = list(excludes)
 	fsys['meta']['modes'] = __modes
+	fsys['meta']['user'] = os.popen('whoami').read().strip()
+	fsys['meta']['UID'] = os.popen('id -u').read().strip()
+	fsys['meta']['GID'] = os.popen('id -g').read().strip()
+	fsys['meta']['hostname'] = socket.gethostname().strip()
 
 	__logger.info( creator_template['system'].format( fsys['meta']['system'] ) )
 	__logger.info( "Excluded directories:" )

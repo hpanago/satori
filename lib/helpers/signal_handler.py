@@ -3,7 +3,8 @@ import logging as log
 import signal
 
 
-def sigHandle(a, b) :
+def sigHandle(signal, frame) :
+	print
 	print "Aborted by the User..."
 	sys.exit(0)
 
