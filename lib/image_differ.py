@@ -5,6 +5,7 @@ import difflib
 import logging as log
 
 # from lib.definitions import meta_templates
+# from lib.definitions import file_tags as tags
 
 tags = [ 'content', 'path', 'filename', 'type', 'size', 'privileges', 'owner', 'group', 'SHA2' ]
 criticals = tags[5 : 7]
@@ -50,7 +51,7 @@ def reportMeta(meta, original = False) :
 	else :
 		__logger.info( meta_templates['subject'] )
 
-	__logger.info( meta_templates['program'].format( meta['program'] ) )
+	# __logger.info( meta_templates['program'].format( meta['program'] ) )
 	__logger.info( meta_templates['version'].format( meta['version'] ) )
 	__logger.info( meta_templates['system'].format( meta['system'] ) )
 	__logger.info( meta_templates['date'].format( meta['date'] ) )

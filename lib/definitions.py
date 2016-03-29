@@ -24,3 +24,7 @@ meta_templates['UID'] = "Image created by User ID: '{0}'"
 meta_templates['GID'] = "Image created as Group ID: '{0}'"
 
 meta_templates['hostname'] = "Machine's hostname is: '{0}'"
+
+
+
+file_tags = [ 'filename', 'path', 'owner', 'group', 'size', 'privileges', 'type', 'content', 'SHA2' ]

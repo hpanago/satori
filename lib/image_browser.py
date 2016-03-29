@@ -60,12 +60,16 @@ class SatoriShell (cmd.Cmd) :
 		if ( name in self.__wd['content'].keys() ) :
 			return True
 		else :
-			print "File '%s' doesn't exist in current directory!" % name
+			print "	File '%s' doesn't exist in current directory!" % name
 			return False
 
 
-	def do_info (self, line) :
+	def do_id (self, line) :
+		"""	Typical UNIX command. Added for extra flavour"""
+		print "	uid=%s(%s)	gid=%s"	% (self.__image['meta']['UID'], self.__image['meta']['user'], self.__image['meta']['GID'] )
 
+	def do_info (self, line) :
+		"""	Prints out Information about the Satori Image being browsed."""
 		print
 		print "Image Info:"
 		for k in meta_tags :
@@ -75,14 +79,34 @@ class SatoriShell (cmd.Cmd) :
 
 
 	def do_ls (self, line) :
-		if self.__wd['type'] == 'directory' :
-			print "    ".join( self.__wd['content'].keys() )
+		"""	Typical UNIX command. Lists directories."""
+		# if line.strip() : 
+
+		target = self.__wd
+		arg = line.split()
+		if len(arg) > 0 :
+
+			if self.exists (arg[0]) :
+				target = self.__wd['content'][arg[0]]
+			else :
+				return
+
+
+		if target['type'] == 'directory' :
+			print "	".join( target['content'].keys() )
 		else :
-			pprint( "'%s' is not a directory" % self.__wd )
+			print "	'%s' is not a directory" % target['filename'] 
+		return
+
+
+
+	def complete_ls (self, text, line, begidx, endidx) :
+		return self.complete_cd ( text, line, begidx, endidx ) 
 
 
 
 	def do_cd (self, line) :
+		"""	Typical UNIX command. Changes 'Current working directory'. Arguments such as '../' can also be used."""
 		f = line.strip()
 		if not f :
 			return 
@@ -115,15 +139,22 @@ class SatoriShell (cmd.Cmd) :
 				self.change_prompt(self.__wd)
 
 			else :
-				print "Can't 'cd' to '%s', not a directory." % self.__wd['content'][f]['filename']
+				print "	Can't 'cd' to '%s', not a directory." % self.__wd['content'][f]['filename']
 
 		else :
-			print "Can't 'cd' to '%s', directory doesn't exist." % f
+			print "	cCan't 'cd' to '%s', directory doesn't exist." % f
+
+
+	def complete_cd (self, text, line, begidx, endidx) :
+		if not text :
+			return self.__wd['content'].keys()
+		else :
+			return [ f for f in self.__wd['content'].keys() if f.startswith(text) ]
 
 
 
 	def do_stat (self, line) :
-
+		"""	Typical UNIX command. Displays collected information about files."""
 		f = line.strip()
 
 		if not f :
@@ -143,10 +174,12 @@ class SatoriShell (cmd.Cmd) :
 
 
 	def do__keys (self, line) :
+		# """Debugging command. Shows the "working directory's" dictionary keys"""
 		
 		print self.__wd.keys()
 
 	def do__trace_cd (self, line) :
+		# """Debugging command. Shows the "cd stack-trace" """
 
 		print [x['filename'] for x in self.cd_stack]
 

@@ -136,17 +136,6 @@ def create_file_obj(full_path, name, fobj) :
 		args = (full_path, name, ret, fobj)
 		queue.put(args)
 
-		# if thrd.active_count() < __threads :
-		# 	# print "++++ CREATING THREAD +++++ %d/%d" % (thrd.active_count(), __threads) 
-		# 	t = thrd.Thread( target = crawl_folder, args = (full_path, name, ret) )	# line to multithread
-		# 	t.start()
-	
-		# 	t.join()
-		# else :
-		# 	crawl_folder (full_path, name, ret)	# line to multithread
-
-		# fobj['content'] = ret
-
 	elif 'text' in mime and 'text' in __modes:
 		try :
 			f = open( full_name, 'r' )
@@ -164,6 +153,7 @@ def create_file_obj(full_path, name, fobj) :
 				f = open( full_name, 'rb' )
 				fobj['SHA2'] = hashfile(f, hashlib.sha256())
 				f.close()
+
 			except Exception as e :
 				__logger.debug( "'%s' while opening file '%s' for hashing!" % (str(e),full_name) )
 				pass

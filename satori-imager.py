@@ -62,6 +62,7 @@ if __name__ == "__main__" :
 	args = parser.parse_args()
 
 
+	filename = args.image
 
 	'''	================================================ VERBOSITY CHECKS ================================================ '''
 
@@ -105,13 +106,16 @@ if __name__ == "__main__" :
 
 	if args.filetypes :
 		maker.__modes.append( 'type' )
+		filename += '_TYPE'
 
 	elif args.text :
 		maker.__modes.append( 'type' )
 		maker.__modes.append( 'text' )
+		filename += '_TYPE_TEXT'
 
 	if args.hash :
 		maker.__modes.append( 'hash' )
+		filename += '_HASH'
 
 
 
@@ -133,8 +137,7 @@ if __name__ == "__main__" :
 	maker.__threads = args.threads
 
 
-
-	outfile = (args.image + exten).replace(' ','_')
+	outfile = (filename + exten).replace(' ','_')
 
 	__log.info('File "%s" will be created' % outfile)
 	__log.info('')
