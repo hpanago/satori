@@ -29,6 +29,7 @@ excludes.add('/root')
 excludes.add('/boot')
 excludes.add('/media')
 excludes.add('/usr/src')
+excludes.add('/var/log')
 
 __logger = log.getLogger( '__main__' )
 
@@ -64,7 +65,6 @@ def thread_worker( id ) :
 		folder[ key ] = ret
 
 		queue.task_done()
-	__logger.debug( 'Thread %d stopped gracefully!' % id )
 
 
 def get_root_dir() :
@@ -99,7 +99,7 @@ http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 def create_file_obj(full_path, name, fobj) :
 
 	full_name = os.path.join(full_path, name)
-	__logger.debug( 'create_file_obj( %s )' % full_name )
+	# __logger.debug( 'create_file_obj( %s )' % full_name )
 
 	if 'type' in __modes :
 		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()	# main.py: Python script, ASCII text executable		# sample output
@@ -173,9 +173,6 @@ def crawl_folder(base, folder_path, fset) :
 	full_path = os.path.join( base, folder_path )
 
 	try : 
-		to_map = Queue()
-		threads = []
-		results = []
 
 		for file in os.listdir(full_path) :
 
@@ -201,7 +198,8 @@ def crawl_filesystem() :
 	threads = []
 	for i in range(__threads) :
 		t = thrd.Thread( target = thread_worker, args = (i,) )
-		t.daemon = True
+		threads.append( t )
+		t.setDaemon( True )
 		t.start()
 
 	root = get_root_dir()
