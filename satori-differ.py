@@ -10,6 +10,7 @@ import lib.image_differ as differ
 import lib.image_io as io
 import lib.definitions as defs
 
+import lib.helpers.signal_handler
 
 header = '''
 Welcome to {0} Differ

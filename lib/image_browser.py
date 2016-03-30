@@ -10,7 +10,7 @@ from lib.definitions import meta_templates, meta_tags
 color = {}
 color['gray'] = '\033[04;39m'
 color['green'] = '\033[01;32m'
-color['red'] = '\033[0;31m'
+color['red'] = '\033[01;31m'
 color['blue'] = '\033[01;34m'
 color['END'] = '\033[00m'
 
@@ -19,7 +19,7 @@ class SatoriShell (cmd.Cmd) :
 
 	commands = [ 'cd', 'ls', 'stat', 'cat', 'file', 'hash', 'pwd', 'info' ]
 	debugs = [ 'keys', 'value' ]
-	prompt_format = color['gray'] + "{{Satori}}" + color['END'] + ' %s%s@%s%s ' + color['blue'] + '{0} $ '+color['END']		# "{Satori} john@Lucinda / $ "
+	prompt_format = color['gray'] + "{{Satori}}" + color['END'] + ' %s%s@%s%s ' + color['blue'] + '{0} %s '+color['END']		# "{Satori} john@Lucinda / $ "
 	prompt = prompt_format.format('/')
 
 	dir_regex = '(\.\./?)+'
@@ -48,10 +48,12 @@ class SatoriShell (cmd.Cmd) :
 		self.__host = image['meta']['hostname']
 
 		col = color['green']
+		symb = '$'
 		if self.__user == 'root' :
 			col = color['red']
+			symb = '#'
 
-		self.prompt_format = self.prompt_format % (col, self.__user, self.__host, color['END'])
+		self.prompt_format = self.prompt_format % (col, self.__user, self.__host, color['END'], symb)
 		self.change_prompt(self.__wd)
 
 

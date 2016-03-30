@@ -18,11 +18,9 @@ meta_templates['system'] = "System string is '{0}'"
 meta_templates['date'] = "Created on '{0}'"
 meta_templates['excludes'] = "Excluded directories: '{0}'"
 meta_templates['modes'] = "Supported modes are: '{0}'"
-# meta_templates['user'] = "Image created as: 'uid={0}({1}) gid={2}'"
 meta_templates['user'] = "Image created as user: '{0}'"
 meta_templates['UID'] = "Image created by User ID: '{0}'"
 meta_templates['GID'] = "Image created as Group ID: '{0}'"
-
 meta_templates['hostname'] = "Machine's hostname is: '{0}'"
 
 

@@ -4,7 +4,7 @@ import os
 import difflib
 import logging as log
 
-# from lib.definitions import meta_templates
+from lib.definitions import meta_templates, meta_tags
 # from lib.definitions import file_tags as tags
 
 tags = [ 'content', 'path', 'filename', 'type', 'size', 'privileges', 'owner', 'group', 'SHA2' ]
@@ -21,22 +21,15 @@ __logger = log.getLogger( '__main__' )
 __file_tmpl = "File '{0}'"
 
 templates = {}
-templates[__non_exist] 		= "%s exists in the original but not in the given image!" % __file_tmpl
-templates[__not_original]	= "%s is not existent in the original image."	% __file_tmpl
-templates['content']		= "%s has different contents !" % __file_tmpl
-templates['type']			= "%s has different type. Original is {1} and given is {2} !" % __file_tmpl
-templates['size']			= "%s size differs. Original is of size {1} bytes and given is {2} !" % __file_tmpl
-templates['privileges']		= "%s has different privileges! Originals are {1} and given are {2} !" % __file_tmpl
-templates['owner']			= "%s has different owner! Original owner is {1} and the file is owned by {2} !" % __file_tmpl
-templates['group']			= "%s has different group! Original group is {1} and the file's group is {2} !" % __file_tmpl
-templates['SHA2']			= "%s has different hash. Original file's hash is '{1}' and the file's hash is '{2}' !" % __file_tmpl
-
-
-meta_templates = {}
-meta_templates['program'] = 'Created by {0}'
-meta_templates['version'] = 'Image version {0}'
-meta_templates['system'] = "System string is '{0}'"
-meta_templates['date'] = "Created on '{0}'"
+templates[__non_exist] 		= "[EXISTENCE] %s exists in the original but not in the given image!" % __file_tmpl
+templates[__not_original]	= "[EXISTENCE] %s is not existent in the original image."	% __file_tmpl
+templates['content']		= "[ALTERATION] %s has different contents !" % __file_tmpl
+templates['type']			= "[ALTERATION] %s has different type. Original is {1} and given is {2} !" % __file_tmpl
+templates['size']			= "[ALTERATION] %s size differs. Original is of size {1} bytes and given is {2} !" % __file_tmpl
+templates['privileges']		= "[CHMOD-ED] %s has different privileges! Originals are {1} and given are {2} !" % __file_tmpl
+templates['owner']			= "[CHOWN-ED] %s has different owner! Original owner is {1} and the file is owned by {2} !" % __file_tmpl
+templates['group']			= "[CHOWN-ED] %s has different group! Original group is {1} and the file's group is {2} !" % __file_tmpl
+templates['SHA2']			= "[ALTERATION] %s has different hash. Original file's hash is '{1}' and the file's hash is '{2}' !" % __file_tmpl
 
 meta_templates['original'] = "Original System Image:"
 meta_templates['subject'] = "Subject System Image:"
@@ -51,10 +44,10 @@ def reportMeta(meta, original = False) :
 	else :
 		__logger.info( meta_templates['subject'] )
 
-	# __logger.info( meta_templates['program'].format( meta['program'] ) )
-	__logger.info( meta_templates['version'].format( meta['version'] ) )
-	__logger.info( meta_templates['system'].format( meta['system'] ) )
-	__logger.info( meta_templates['date'].format( meta['date'] ) )
+	for tag in meta_tags :
+		if tag == 'program' :
+			continue
+		__logger.info( meta_templates[ tag ].format( meta[ tag ] ) )
 	
 	__logger.info( '==================================================' )
 
