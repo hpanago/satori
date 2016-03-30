@@ -101,31 +101,32 @@ def diffFile(file1, file2) :
 
 	if file1['type'] == 'directory' :
 
-		diffFolder( file1['content'], file2['content'] )
+		diffFolder( file1, file2 )
 
 
 
 def diffFolder(folder1, folder2) :
 
-	loc1 = set( folder1.keys() )
-	loc2 = set( folder2.keys() )
+	loc1 = set( folder1['content'].keys() )
+	loc2 = set( folder2['content'].keys() )
 
+	base_path = folder1['path'] + os.sep + folder1['filename'] + os.sep
 
 	diffs = loc1 - loc2
 
 	for diff in diffs :
-		reportDiff (diff, __non_exist, folder1, folder2)
-
+		full_path = base_path + diff
+		reportDiff (full_path, __non_exist, folder1, folder2)
 
 	diffs = loc2 - loc1
 
 	for diff in diffs :
-		reportDiff (diff, __not_original, folder2, folder1)
+		full_path = base_path + diff
+		reportDiff (full_path, __not_original, folder2, folder1)
 
 
 	for key in (loc1 & loc2) :
-		diffFile( folder1[key], folder2[key] )
-	pass
+		diffFile( folder1['content'][key], folder2['content'][key] )
 
 
 
