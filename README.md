@@ -64,7 +64,10 @@ Deeply diffs 2 satori Images
 <p>
 There are even features for hash comparison of binaries (backdoored /bin/ files) and text-file 'diffing' for configuration files (you don't remember you allowed 'root login' in /etc/ssh/sshd_config ? ...well you maybe didn't!)
 <p><p><p>
-Well, while *Satori* doesn't reveal vulnerabilities or misconfiguration, it gives you a place to start by showing you all the "*_Deviations_*". The magic word in forensics!
+Well, while *Satori* doesn't reveal _vulnerabilities_ or _misconfiguration_, it gives you a place to start by showing you all the "*_Deviations_*" from the normal. And *Deviation* is the magic word in forensics!
+<p><p><br>
+
+Satori is in the public domain. Use it and/or change it freely.
 
 
 
