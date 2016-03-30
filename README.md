@@ -15,6 +15,14 @@ It is named after the spontaneous feeling of absolute knowledge, an analyst feel
 
   <b>Satori Imager</b> creates images of a File System saving key elements for each file like: _filename_(duh!), _privileges_, _size_, _type_, _text content_ and _hash_ (if chosen), while maintaining the File System's tree-like structure.
 The images are saved as (gzipped) Json files or python Pickles and also contain metadata about the system such as user that did the image dump, date of the image dump, system 'uname' and more.
+```
+usage: satori-imager.py [-h] [--type {pickle,json,sqlite}] [--no-gzip]
+                        [--verbose | --debug | --quiet] [--filetypes | --text]
+                        [--hash] [--threads THREADS]
+                        [image]
+
+Crawls the whole filesystem and creates an image of it to a file.
+```
 <p><p><br>
 ####<i>satori-browser</i>
 
@@ -41,7 +49,13 @@ boot            home            lib             libx32          media           
 <p><p><br>
 
 ####<i>satori-differ</i>
+```
+usage: satori-differ.py [-h] [--type {pickle,json,sqlite}] [--no-gzip]
+                        [-v | --debug | --quiet]
+                        original subject
 
+Deeply diffs 2 satori Images
+```
   <b>Satori Differ</b> is the real magic! Here is how it works:
 <p>
 * Let's say you get your hands on a File System where something has gone wrong. Either you know it is 'rootable' (maybe a vulnhub VM?) or it has been under attack and there may exist a backdoor in it. Running the <b>Satori Imager</b> on it you acquire an image of it.
