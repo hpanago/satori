@@ -8,7 +8,9 @@ It is named after the spontaneous feeling of absolute knowledge, an analyst feel
 <i>The idea (and inspiration) for development of this tool came from mr. Vivek Ramachandran, [Securitytube.net](Securitytube.net) founder, as the main project for Module 8 of the *'SecurityTube Python Scripting Expert (SPSE)' Course*. I thank him from the bottom of my heart for his contribution in security community (and my personal development)!</i>
 <p><br>
 
-Satori has 3 basic tools:
+# Suite Description
+<p>
+###Satori has 3 basic tools:
 ####<i>satori-imager</i>
 
   <b>Satori Imager</b> creates images of a File System saving key elements for each file like: _filename_(duh!), _privileges_, _size_, _type_, _text content_ and _hash_ (if chosen), while maintaining the File System's tree-like structure.
