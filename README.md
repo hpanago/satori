@@ -5,7 +5,7 @@
 
 It is named after the spontaneous feeling of absolute knowledge, an analyst feels when he/she finally understands what exactly is happening in a system or network!
 
-<i>The idea (and inspiration) for development of this tool came from mr. Vivek Ramachandran, Securitytube.net founder, as the main project for Module 8 of the <b>'SecurityTube Python Scripting Expert (SPSE)' Course </b>. I thank him from the bottom of my heart for his contribution in security community!</i>
+<i>The idea (and inspiration) for development of this tool came from mr. Vivek Ramachandran, Securitytube.net founder, as the main project for Module 8 of the <b>'SecurityTube Python Scripting Expert (SPSE)' Course </b>. I thank him from the bottom of my heart for his contribution in security community (and my personal development)!</i>
 <p><br>
 
 Satori has 3 basic tools:
@@ -40,5 +40,16 @@ boot            home            lib             libx32          media           
 
 ####<i>satori-differ</i>
 
-  <b>Satori Differ</b> is the real magic!
+  <b>Satori Differ</b> is the real magic! Here is how it works:
+<p>
+* Let's say you get your hands on a File System where something has gone wrong. Either you know it is 'rootable' (maybe a vulnhub VM?) or it has been under attack and there may exist a backdoor in it. Running the <b>Satori Imager</b> on it you acquire an image of it.
+* Given it is a Linux Distro you can find its clean form online. So by downloading, *checking the hash* and installing it in a VM you can run again the <b>Satori Imager</b> and get the clean image of the very same distribution.
+* Now, by running the <b>Satori Differ</b> in the 2 images (let's call them 'original' and 'dirty') you get every kind of difference between them, being _privilege_ alteration, different _size_ for crucial files, _missing_ or _renamed_ files, '_chowned_' files, etc...
+<p>
+There are even features for hash comparison of binaries (backdoored /bin/ files) and text-file 'diffing' for configuration files (you don't remember you allowed 'root login' in /etc/ssh/sshd_config ? ...well you maybe didn't!)
+<p><p><p>
+Well, while *Satori* doesn't reveal vulnerabilities or misconfiguration, it gives you a place to start by showing you all the "_Deviations_". The magic word in forensics
+
+
+
 
