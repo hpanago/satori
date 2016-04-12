@@ -10,12 +10,7 @@ from lib.image_browser import *
 
 import lib.helpers.signal_handler
 
-
-header = '''
-Welcome to {0} Browser
-OS filesystem image Browser
-Version {1}
-'''.format(defs.program_name, defs.version)
+header = defs.header.format( "OS filesystem image Browser" )
 
 
 log.basicConfig(format = "%(message)s")

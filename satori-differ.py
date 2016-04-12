@@ -12,12 +12,7 @@ import lib.definitions as defs
 
 import lib.helpers.signal_handler
 
-header = '''
-Welcome to {0} Differ
-OS filesystem image Difference Finder
-Version {1}
-'''.format(defs.program_name, defs.version)
-
+header = defs.header.format( "OS filesystem image Difference Finder" )
 
 log.basicConfig(format = "%(message)s")
 

@@ -10,7 +10,7 @@ from datetime import date
 
 # import multiprocessing as mproc
 import threading as thrd
-from multiprocessing.pool import ThreadPool
+# from multiprocessing.pool import ThreadPool
 from Queue import Queue
 from time import sleep
 
@@ -151,6 +151,7 @@ def create_file_obj(full_path, name, fobj) :
 		if 'hash' in __modes :
 			try :
 				f = open( full_name, 'rb' )
+				# fobj['SHA2'] = hashfile(f, hashlib.md5())
 				fobj['SHA2'] = hashfile(f, hashlib.sha256())
 				f.close()
 

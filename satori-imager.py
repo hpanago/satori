@@ -15,14 +15,7 @@ import lib.helpers.signal_handler
 import signal
 import sys
 
-
-
-header = '''
-Welcome to {0} Imager
-OS filesystem image Creator
-Version {1}
-'''.format(defs.program_name, defs.version)
-
+header = defs.header.format( "OS filesystem image Creator" )
 
 log.basicConfig(format = "%(message)s")
 

@@ -1,6 +1,16 @@
 # Satori (悟り)
 <u>*A 'forensic oriented' filesystem image suite!*</u>
-
+```
+   ▄████████    ▄████████     ███      ▄██████▄     ▄████████  ▄█  
+  ███    ███   ███    ███ ▀█████████▄ ███    ███   ███    ███ ███  
+  ███    █▀    ███    ███    ▀███▀▀██ ███    ███   ███    ███ ███▌ 
+  ███          ███    ███     ███   ▀ ███    ███  ▄███▄▄▄▄██▀ ███▌ 
+▀███████████ ▀███████████     ███     ███    ███ ▀▀███▀▀▀▀▀   ███▌ 
+         ███   ███    ███     ███     ███    ███ ▀███████████ ███  
+   ▄█    ███   ███    ███     ███     ███    ███   ███    ███ ███  
+ ▄████████▀    ███    █▀     ▄████▀    ▀██████▀    ███    ███ █▀   
+                                                   ███    ███ 
+```
 *"_Satori_"* is a Japanese Buddhist term for *awakening*, "*comprehension*; *understanding*" [...] *enlightment*. [en.wikipedia.org/wiki/Satori](en.wikipedia.org/wiki/Satori)
 
 It is named after the spontaneous feeling of absolute knowledge, an analyst feels when he/she finally understands what exactly is happening in a system or network!

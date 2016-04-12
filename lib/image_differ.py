@@ -61,11 +61,11 @@ def reportDiff(entry, diff_type, f1 = '', f2 = '') :
 	full_path = ( entry )
 
 	if diff_type == __not_original :
-		__logger.info( templates[ __non_exist ].format( full_path ) )
+		__logger.info( templates[ __not_original ].format( full_path ) )
 		return
 
 	elif diff_type == __non_exist :
-		__logger.warning( templates[ __not_original ].format( full_path ) )
+		__logger.warning( templates[ __non_exist ].format( full_path ) )
 		return
 
 	if diff_type in criticals :
