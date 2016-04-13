@@ -35,7 +35,8 @@ if __name__ == "__main__" :
 	parser.add_argument( '--type', '-t', help = 'Choose the file type of the images',\
 										type = str, choices = ['pickle', 'json', 'sqlite'], default = 'json' )
 
-	parser.add_argument( '--no-gzip', '-ng', help = 'Image IO will *NOT* use gzip (larger but readable files)', action = 'store_true', default = False )
+	parser.add_argument( '--no-gzip', '-ng', help = 'Image IO will *NOT* use gzip (larger but readable files)',\
+							 action = 'store_true', default = False )
 
 	verb = parser.add_mutually_exclusive_group()
 	verb.add_argument( '--verbose', '-v' , help = 'verbose mode', action = 'count', default = 0 )
@@ -43,20 +44,25 @@ if __name__ == "__main__" :
 	verb.add_argument( '--quiet', '-q' , help = 'quiet mode', action = 'store_true', default = False )
 
 	deepness = parser.add_mutually_exclusive_group()
-	deepness.add_argument( '--filetypes', help = "Try to guess filetypes with mimes and 'file' command (slower)", action = 'store_true', default = False )
+	deepness.add_argument( '--filetypes', help = "Try to guess filetypes with mimes and 'file' command (slower)",\
+							 action = 'store_true', default = False )
 	deepness.add_argument( '--text', help = "Guess file types and save all text contents of a file in the image (very slow! Useful for config files)",\
 							action = 'store_true', default = False )
 
-	parser.add_argument( '--hash', help = "Calculate and store the SHA-256 of every file in the image (slower)", action = 'store_true', default = False )
+	parser.add_argument( '--hash', help = "Calculate and store the SHA-256 of every file in the image (slower)",\
+							action = 'store_true', default = False )
 
 	parser.add_argument( '--threads', help = 'Use threads to create the Filesystem Image (good for multiple IO calls)',\
-							 type = int, default = 1 )
+							 type = int, default = 4 )
 
 
 	exclude_all_flag = "CLEAR"
-	exclude_group = parser.add_mutually_exclusive_group()
-	exclude_group.add_argument( '--exclude', '-x', help = 'Select directories to be excluded', nargs = '+', default = '',\
-							 type = str )
+	parser.add_argument( '--exclude', '-x', \
+		help = 'Select directories to be Excluded (If keyword "%s" is among the options the stated directories will be the only excluded) ',\
+							nargs = '+', default = '', type = str )
+
+	# parser.add_argument( '--include', '-i', help = 'Select directories to be Included', nargs = '+', default = '',\
+							 # type = str )
 	# exclude_group.add_argument( '--default', action = 'store_true', default = False )
 
 	args = parser.parse_args()
@@ -134,6 +140,9 @@ if __name__ == "__main__" :
 	if args.threads < 1 or args.threads > 64 :
 		__log.info( "* Thread number incorrect! Using single-threading. *" )
 		args.threads = 1
+	# else :
+		# __log.info( "* Using %d Threads *" % args.threads )
+
 	maker.__threads = args.threads
 
 
@@ -150,9 +159,9 @@ if __name__ == "__main__" :
 
 	if exclude_all_flag in excludes :
 		excludes.remove(exclude_all_flag)
-		maker.excludes = excludes
+		maker.__excludes = excludes
 	else :
-		maker.excludes = maker.excludes | excludes
+		maker.__excludes = maker.__excludes | excludes
 
 
 

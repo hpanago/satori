@@ -7,6 +7,8 @@ from stat import *
 import os
 import socket
 from datetime import date
+import getpass
+import magic
 
 # import multiprocessing as mproc
 import threading as thrd
@@ -20,21 +22,23 @@ import definitions as defs
 
 import helpers.signal_handler
 
+hard_excludes = set()
+hard_excludes.add('/dev/random')
+hard_excludes.add('/dev/urandom')
 
 
-excludes = set()
-excludes.add('/proc')
-excludes.add('/run')
-excludes.add('/sys')
-excludes.add('/dev')
-excludes.add('/boot')
-excludes.add('/media')
-excludes.add('/usr/src')
-excludes.add('/var/log')
-
-
-excludes.add('/root')
-excludes.add('/home')
+__excludes = set()
+__excludes.add('/proc')
+__excludes.add('/run')
+__excludes.add('/sys')
+__excludes.add('/dev')
+__excludes.add('/boot')
+__excludes.add('/media')
+__excludes.add('/usr/src')
+__excludes.add('/var/log')
+#	Generally unwanted
+__excludes.add('/root')
+__excludes.add('/home')
 
 
 __logger = log.getLogger( '__main__' )
@@ -49,6 +53,8 @@ creator_template['version'] = 'Version: {0}'
 creator_template['system'] = 'Found system: {0}'
 
 __modes = []
+# magic_obj = magic.open(magic.MAGIC_NONE)
+# magic_obj.load()
 
 __threads = 1
 
@@ -59,16 +65,12 @@ queue = Queue()
 def thread_worker( id ) :
 
 	while not __crawling_done :
-		# task = queue.get(True, 0.05)
+
 		try :
 			task = queue.get(True, 0.05)
-			# task = queue.get_nowait(True, 0.05)
 		except :
-			# try :
-			# 	sleep(0.1)
-			# except :
-				# continue				
 			continue
+
 		full_path, name, ret, folder = task
 
 		key = full_path + os.sep + name 
@@ -98,18 +100,10 @@ def hashfile(afile, hasher, blocksize = 65536):
 	'''
 http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 	'''
-	# if afile == None :
-	# 	return ''
-	# buf = afile.read(blocksize)
-	# while len(buf) > 0:
-	# 	hasher.update(buf)
-	# 	buf = afile.read(blocksize)
-	# afile.close()
-	# hash_str = hasher.hexdigest()
 
 	buf = afile.read()
-	hash_str = hashlib.md5(buf).hexdigest()
-
+	hash_str = hasher(buf).hexdigest()
+	afile.close()
 	__logger.debug( "hash: '%s' " % hash_str )
 	return hash_str
 
@@ -122,6 +116,7 @@ def create_file_obj(full_path, name, fobj) :
 
 	if 'type' in __modes :
 		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()	# main.py: Python script, ASCII text executable		# sample output
+		# mime = magic_obj.file( full_name )
 	else :
 		mime = mimetypes.guess_type( full_name )[0]
 		if mime == None :
@@ -138,7 +133,7 @@ def create_file_obj(full_path, name, fobj) :
 	fobj['type'] = mime
 	fobj['SHA2'] = __NA
 
-	if full_name in excludes :
+	if full_name in __excludes :
 		return fobj
 
 	if S_ISLNK(stat_obj.st_mode) :
@@ -166,8 +161,7 @@ def create_file_obj(full_path, name, fobj) :
 		if 'hash' in __modes :
 			try :
 				f = open( full_name, 'rb' )
-				fobj['SHA2'] = hashfile(f, hashlib.md5())
-				# fobj['SHA2'] = hashfile(f, hashlib.sha256())
+				fobj['SHA2'] = hashfile( f, hashlib.sha256 )
 				f.close()
 
 			except Exception as e :
@@ -224,7 +218,9 @@ def crawl_filesystem() :
 
 
 
-def create_Image(system_name = 'unknown') :
+def create_Image( system_name = 'Unknown System' ) :
+
+	# __excludes = __excludes | hard_excludes	#	Exclude files known to cause problems (/dev/random, etc)
 
 	fsys = {}
 
@@ -233,16 +229,17 @@ def create_Image(system_name = 'unknown') :
 	fsys['meta']['version'] = defs.version	
 	fsys['meta']['system'] = system_name
 	fsys['meta']['date'] = str(date.today())
-	fsys['meta']['excludes'] = list(excludes)
+	fsys['meta']['excludes'] = list(__excludes)
 	fsys['meta']['modes'] = __modes
-	fsys['meta']['user'] = os.popen('whoami').read().strip()
+	# fsys['meta']['user'] = os.popen('whoami').read().strip()
+	fsys['meta']['user'] = getpass.getuser()
 	fsys['meta']['UID'] = os.popen('id -u').read().strip()
 	fsys['meta']['GID'] = os.popen('id -g').read().strip()
 	fsys['meta']['hostname'] = socket.gethostname().strip()
 
 	__logger.info( creator_template['system'].format( fsys['meta']['system'] ) )
 	__logger.info( "Excluded directories:" )
-	for dir in excludes :
+	for dir in __excludes :
 		__logger.info( "-> "+dir )
 
 	fsys['system'] = crawl_filesystem()

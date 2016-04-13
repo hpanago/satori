@@ -41,7 +41,7 @@ banner = '''
 
 
 header = '''%s
-Welcome to %s Differ
+Welcome to %s 
 {0}
 Version %s
 ''' % ( banner, program_name, version )
