@@ -98,16 +98,20 @@ def hashfile(afile, hasher, blocksize = 65536):
 	'''
 http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 	'''
-	if afile == None :
-		return ''
-	buf = afile.read(blocksize)
-	while len(buf) > 0:
-		hasher.update(buf)
-		buf = afile.read(blocksize)
-	afile.close()
-	hash_str = hasher.hexdigest()
+	# if afile == None :
+	# 	return ''
+	# buf = afile.read(blocksize)
+	# while len(buf) > 0:
+	# 	hasher.update(buf)
+	# 	buf = afile.read(blocksize)
+	# afile.close()
+	# hash_str = hasher.hexdigest()
+
+	buf = afile.read()
+	hash_str = hashlib.md5(buf).hexdigest()
+
 	__logger.debug( "hash: '%s' " % hash_str )
-	return 
+	return hash_str
 
 
 
