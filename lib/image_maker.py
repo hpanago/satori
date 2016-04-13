@@ -25,13 +25,15 @@ import helpers.signal_handler
 excludes = set()
 excludes.add('/proc')
 excludes.add('/run')
-excludes.add('/home')
 excludes.add('/sys')
-excludes.add('/root')
 excludes.add('/boot')
 excludes.add('/media')
 excludes.add('/usr/src')
 excludes.add('/var/log')
+
+excludes.add('/root')
+excludes.add('/home')
+
 
 __logger = log.getLogger( '__main__' )
 

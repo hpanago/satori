@@ -52,6 +52,13 @@ if __name__ == "__main__" :
 	parser.add_argument( '--threads', help = 'Use threads to create the Filesystem Image (good for multiple IO calls)',\
 							 type = int, default = 1 )
 
+
+	exclude_all_flag = "CLEAR"
+	exclude_group = parser.add_mutually_exclusive_group()
+	exclude_group.add_argument( '--exclude', '-x', help = 'Select directories to be excluded', nargs = '+', default = '',\
+							 type = str )
+	# exclude_group.add_argument( '--default', action = 'store_true', default = False )
+
 	args = parser.parse_args()
 
 
@@ -134,6 +141,22 @@ if __name__ == "__main__" :
 
 	__log.info('File "%s" will be created' % outfile)
 	__log.info('')
+
+
+
+	'''	================================================ EXCLUDE OPTION ================================================ '''
+
+	excludes = set(args.exclude)
+
+	if exclude_all_flag in excludes :
+		excludes.remove(exclude_all_flag)
+		maker.excludes = excludes
+	else :
+		maker.excludes = maker.excludes | excludes
+	print maker.excludes
+	# sys.exit(0)
+
+
 
 	fs = maker.create_Image( os_def_name )
 	__log.warning( 'Image generated! Creating File...' )
