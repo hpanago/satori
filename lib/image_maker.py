@@ -8,7 +8,7 @@ import os
 import socket
 from datetime import date
 import getpass
-import magic
+# import magic
 
 # import multiprocessing as mproc
 import threading as thrd
@@ -56,7 +56,7 @@ __modes = []
 # magic_obj = magic.open(magic.MAGIC_NONE)
 # magic_obj.load()
 
-__threads = 1
+__threads = 4
 
 __crawling_done = False
 queue = Queue()
