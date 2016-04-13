@@ -153,8 +153,6 @@ if __name__ == "__main__" :
 		maker.excludes = excludes
 	else :
 		maker.excludes = maker.excludes | excludes
-	print maker.excludes
-	# sys.exit(0)
 
 
 

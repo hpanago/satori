@@ -2,7 +2,7 @@
 #-*- coding: utf-8 -*-
 
 import platform as plat
-
+import sys
 import logging as log
 import argparse
 
@@ -78,6 +78,15 @@ if __name__ == "__main__" :
 
 
 	image1 = io.loadImage( args.original, args.type )
+	if not image1 :
+		__log.critical( defs.cant_read_file % args.original )
+		sys.exit(-1)
+
 	image2 = io.loadImage( args.subject, args.type )
+	if not image2 :
+		__log.critical( defs.cant_read_file % args.subject )
+		sys.exit(-1)
+
+		
 	differ.diffSystem( image1, image2 )
 	__log.warning( "\n" )

@@ -15,7 +15,11 @@ def which_open() :
 def loadImage(filename, type = 'pickle') :	# type = json | pickle | sqlite
 
 	open = which_open()
-	infile = open(filename, 'rb')
+	try :
+		infile = open(filename, 'rb')
+	except IOError :
+		return None
+
 	meth = pickle
 	if type == 'json' :
 		meth = json

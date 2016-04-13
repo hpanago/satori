@@ -45,3 +45,5 @@ Welcome to %s Differ
 {0}
 Version %s
 ''' % ( banner, program_name, version )
+
+cant_read_file = "	[X] File '%s' could not be read. Quiting..."

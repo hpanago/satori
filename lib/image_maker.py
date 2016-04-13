@@ -26,10 +26,12 @@ excludes = set()
 excludes.add('/proc')
 excludes.add('/run')
 excludes.add('/sys')
+excludes.add('/dev')
 excludes.add('/boot')
 excludes.add('/media')
 excludes.add('/usr/src')
 excludes.add('/var/log')
+
 
 excludes.add('/root')
 excludes.add('/home')
@@ -53,13 +55,19 @@ __threads = 1
 __crawling_done = False
 queue = Queue()
 
+
 def thread_worker( id ) :
 
 	while not __crawling_done :
+		# task = queue.get(True, 0.05)
 		try :
-			task = queue.get_nowait()
+			task = queue.get(True, 0.05)
+			# task = queue.get_nowait(True, 0.05)
 		except :
-			sleep(0.1)
+			# try :
+			# 	sleep(0.1)
+			# except :
+				# continue				
 			continue
 		full_path, name, ret, folder = task
 
@@ -68,7 +76,6 @@ def thread_worker( id ) :
 		crawl_folder( full_path, name, ret )
 
 		folder[ 'content' ] = ret
-		# folder[ key ] = ret
 
 		queue.task_done()
 
@@ -98,7 +105,9 @@ http://stackoverflow.com/questions/3431825/generating-a-md5-checksum-of-a-file
 		hasher.update(buf)
 		buf = afile.read(blocksize)
 	afile.close()
-	return hasher.digest()
+	hash_str = hasher.hexdigest()
+	__logger.debug( "hash: '%s' " % hash_str )
+	return 
 
 
 
@@ -153,8 +162,8 @@ def create_file_obj(full_path, name, fobj) :
 		if 'hash' in __modes :
 			try :
 				f = open( full_name, 'rb' )
-				# fobj['SHA2'] = hashfile(f, hashlib.md5())
-				fobj['SHA2'] = hashfile(f, hashlib.sha256())
+				fobj['SHA2'] = hashfile(f, hashlib.md5())
+				# fobj['SHA2'] = hashfile(f, hashlib.sha256())
 				f.close()
 
 			except Exception as e :
