@@ -46,6 +46,7 @@ if __name__ == "__main__" :
 
 	if args.debug :
 		__log.setLevel( log.DEBUG )
+		
 	elif args.quiet :
 		__log.setLevel( log.ERROR )
 

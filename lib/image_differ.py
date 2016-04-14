@@ -73,6 +73,8 @@ def reportDiff(entry, diff_type, f1 = '', f2 = '') :
 	else :
 		__logger.warning( templates[ diff_type ].format( full_path, f1[diff_type], f2[diff_type] ) )
 
+
+
 	if diff_type == tags[0] :	# content
 		__logger.warning( templates['content'].format( full_path ) )
 		if 'text' in f1['content'] :
@@ -92,12 +94,11 @@ def diffFile(file1, file2) :
 
 	full_path = file1['path'] + os.sep + file1['filename']
 
-	for tag in tags[1:-1] :	# exclude content and HASH
+	for tag in tags[1:] :	# exclude content
 		if file1[tag] == __NA :
 			continue
 		if file1[tag] != file2[tag] :
 			reportDiff (full_path, tag, file1, file2)
-			return 1
 
 	if file1['type'] == 'directory' :
 
