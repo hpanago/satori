@@ -95,7 +95,7 @@ def diffFile(file1, file2) :
 	full_path = file1['path'] + os.sep + file1['filename']
 
 	for tag in tags[1:] :	# exclude content
-		if file1[tag] == __NA :
+		if file1[tag] == __NA or file2[tag] == __NA :
 			continue
 		if file1[tag] != file2[tag] :
 			reportDiff (full_path, tag, file1, file2)
