@@ -56,12 +56,8 @@ if __name__ == "__main__" :
 							 type = int, default = 4 )
 
 
-	exclude_all_flag = "CLEAR"
-	parser.add_argument( '--exclude', '-x', \
-		help = 'Select directories to be Excluded (If keyword "%s" is among the options the stated directories will be the only excluded) '\
-							 % exclude_all_flag, nargs = '+', default = '', type = str )
-	parser.add_argument( '--include', '-i', help = 'Select directories to be Included', nargs = '+', default = '',\
-							 type = str )
+	parser.add_argument( '--exclude', '-x', help = 'Select directories to be Excluded', nargs = '+', type = str, default = [] )
+	parser.add_argument( '--include', '-i', help = 'Select directories to be Included', nargs = '+', type = str, default = [] )
 	parser.add_argument( '--clear-excluded', '-c', help = 'Clear default excluded directories', action = 'store_true', default = False)
 	parser.add_argument( '--show-excluded', help = 'Show excluded directories and exit', action = 'store_true', default = False)
 
@@ -170,15 +166,16 @@ if __name__ == "__main__" :
 	maker.__excludes = maker.__excludes | excludes
 	maker.__excludes = maker.__excludes - includes
 
-
+	if args.clear_excluded :
+		maker.__excludes = set()
 
 	if args.show_excluded :
-		__log.critical( 'Excluded Directories :' )
+		__log.info( 'Excluded Directories :' )
 		for excl in maker.__excludes :
 			__log.critical( '-> %s' % excl )
-		__log.info( "Directories/Files ALWAYS excluded (error prone) :" )
+		__log.error( "Directories/Files ALWAYS excluded (error prone) :" )
 		for excl in maker.hard_excludes :
-			__log.info( '-> %s' % excl )
+			__log.error( '-> %s' % excl )
 		sys.exit(0)
 
 
