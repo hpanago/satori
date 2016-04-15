@@ -41,6 +41,9 @@ __excludes.add('/root')
 __excludes.add('/home')
 
 
+__includes = set()
+
+
 __logger = log.getLogger( '__main__' )
 
 __NA = 'N/A'
@@ -83,7 +86,9 @@ def thread_worker( id ) :
 
 
 def get_root_dir() :
-	""" http://stackoverflow.com/questions/12041525/a-system-independent-way-using-python-to-get-the-root-directory-drive-on-which-p """
+	"""
+http://stackoverflow.com/questions/12041525/a-system-independent-way-using-python-to-get-the-root-directory-drive-on-which-p
+	"""
 
 	dr = os.path.splitdrive( sys.executable )
 	if not dr[0] :		#	dr[0] is empty, we have *nix system, root dir is '/' handled later
@@ -220,7 +225,8 @@ def crawl_filesystem() :
 
 def create_Image( system_name = 'Unknown System' ) :
 
-	# __excludes = __excludes | hard_excludes	#	Exclude files known to cause problems (/dev/random, etc)
+	global __excludes
+	__excludes = __excludes | hard_excludes	#	Exclude files known to cause problems (/dev/random, etc)
 
 	fsys = {}
 
