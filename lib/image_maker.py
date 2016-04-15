@@ -237,10 +237,10 @@ def create_Image( system_name = 'Unknown System' ) :
 	fsys['meta']['date'] = str(date.today())
 	fsys['meta']['excludes'] = list(__excludes)
 	fsys['meta']['modes'] = __modes
-	# fsys['meta']['user'] = os.popen('whoami').read().strip()
+
 	fsys['meta']['user'] = getpass.getuser()
-	fsys['meta']['UID'] = os.popen('id -u').read().strip()
-	fsys['meta']['GID'] = os.popen('id -g').read().strip()
+	fsys['meta']['UID'] = os.getuid()
+	fsys['meta']['GID'] = os.getgid()
 	fsys['meta']['hostname'] = socket.gethostname().strip()
 
 	__logger.info( creator_template['system'].format( fsys['meta']['system'] ) )

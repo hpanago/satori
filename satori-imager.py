@@ -21,6 +21,12 @@ log.basicConfig(format = "%(message)s")
 
 __log = log.getLogger( __name__ )
 
+# import lib.helpers.custom_log_format as cLog
+# handler = log.StreamHandler()
+# handler.setFormatter(cLog.CustomFormatter)
+# __log.addHandler(handler)
+#setFormatter(cLog.CustomFormatter)
+
 
 
 if __name__ == "__main__" :
