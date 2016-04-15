@@ -163,16 +163,22 @@ if __name__ == "__main__" :
 		__log.critical('Exiting...')
 		sys.exit(2)
 
-	maker.__excludes = maker.__excludes | excludes
-	maker.__excludes = maker.__excludes - includes
-
 	if args.clear_excluded :
 		maker.__excludes = set()
 
+	maker.__excludes = maker.__excludes | excludes
+	maker.__excludes = maker.__excludes - includes
+
+
+
 	if args.show_excluded :
-		__log.info( 'Excluded Directories :' )
-		for excl in maker.__excludes :
-			__log.critical( '-> %s' % excl )
+		if len(maker.__excludes) == 0 :
+			__log.critical('All directories are included!')
+		else :
+			__log.critical( 'Excluded Directories :' )
+			for excl in maker.__excludes :
+				__log.critical( '-> %s' % excl )
+
 		__log.error( "Directories/Files ALWAYS excluded (error prone) :" )
 		for excl in maker.hard_excludes :
 			__log.error( '-> %s' % excl )

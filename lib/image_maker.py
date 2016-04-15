@@ -244,9 +244,6 @@ def create_Image( system_name = 'Unknown System' ) :
 	fsys['meta']['hostname'] = socket.gethostname().strip()
 
 	__logger.info( creator_template['system'].format( fsys['meta']['system'] ) )
-	__logger.info( "Excluded directories:" )
-	for dir in __excludes :
-		__logger.info( "-> "+dir )
 
 	fsys['system'] = crawl_filesystem()
 
