@@ -41,7 +41,7 @@ __excludes.add('/root')
 __excludes.add('/home')
 
 
-__includes = set()
+__includes = None
 
 
 __logger = log.getLogger( '__main__' )
@@ -119,9 +119,16 @@ def create_file_obj(full_path, name, fobj) :
 	full_name = os.path.join(full_path, name)
 	# __logger.debug( 'create_file_obj( %s )' % full_name )
 
+	if full_name in __excludes :
+		__logger.debug( "File '%s' is excluded" % full_name )
+		fobj['filename'] = __NA
+		return fobj
+
 	if 'type' in __modes :
 		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()	# main.py: Python script, ASCII text executable		# sample output
 		# mime = magic_obj.file( full_name )
+		__logger.debug( "File '%s' of type : %s" % ( full_name, mime ) )
+
 	else :
 		mime = mimetypes.guess_type( full_name )[0]
 		if mime == None :
@@ -138,9 +145,6 @@ def create_file_obj(full_path, name, fobj) :
 	fobj['type'] = mime
 	fobj['SHA2'] = __NA
 
-	if full_name in __excludes :
-		return fobj
-
 	if S_ISLNK(stat_obj.st_mode) :
 		return fobj
 
@@ -154,7 +158,7 @@ def create_file_obj(full_path, name, fobj) :
 	elif 'text' in mime and 'text' in __modes:
 		try :
 			f = open( full_name, 'r' )
-			fobj['content'] = f.read().strip()
+			fobj['content'] = f.read().encode('base64')
 			f.close()
 		except Exception as e :
 			__logger.debug( "'%s' while opening file '%s' for text reading!" % (str(e),full_name) )
@@ -182,23 +186,22 @@ def crawl_folder(base, folder_path, fset) :
 	full_path = os.path.join( base, folder_path )
 
 	try : 
-
 		for file in os.listdir(full_path) :
 
-			key = full_path + os.sep + file 
+			key = full_path + os.sep + file
 			ret = dict()
 
 			create_file_obj(full_path, file, ret)
-			# fset[ key ] = ret
-			fset[ file ] = ret
+
+			if ret['filename'] != __NA :
+				fset[ file ] = ret
+			# else :
+				# __logger.debug( "File '%s' is None" % file )
 
 	except OSError :
 			__logger.info( "\t[*]	Listing folder '{0}' failed!".format( full_path ) )
 
 	return fset
-
-
-
 
 
 

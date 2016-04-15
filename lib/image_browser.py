@@ -27,8 +27,6 @@ class SatoriShell (cmd.Cmd) :
 	cd_stack = []
 
 
-
-
 	def change_prompt(self, dir) :
 
 		path = dir['path'] + os.sep + dir['filename']
@@ -64,6 +62,29 @@ class SatoriShell (cmd.Cmd) :
 		else :
 			print "	File '%s' doesn't exist in current directory!" % name
 			return False
+
+
+	def do_cat (self, line) :
+		"""	Typical UNIX command. Catenates the contents of text file"""
+		arg = line.split()
+		begin = "-----BEGIN '{0}'-----"
+		ending = "-----END   '{0}'-----"
+		for a in arg :
+			if self.exists( a ) :
+				if "text" in self.__wd['content'][a]['type'] :
+					print begin.format(a)
+					print self.__wd['content'][a]['content'].decode('base64')
+					print ending.format(a)
+				else :
+					print "'%s': Unsupported command for file type '%s'" % (a, self.__wd['content'][a]['type'])
+
+
+	def do_file (self, line) :
+		"""	Typical UNIX command. Catenates the contents of text file"""
+		arg = line.split()
+		for a in arg :
+			if self.exists( a ) :
+				print "%s: %s" % ( a, self.__wd['content'][a]['type'] )
 
 
 	def do_id (self, line) :
@@ -153,6 +174,8 @@ class SatoriShell (cmd.Cmd) :
 		else :
 			return [ f for f in self.__wd['content'].keys() if f.startswith(text) ]
 
+	def complete_cat (self, text, line, begidx, endidx) :
+		return self.complete_cd ( text, line, begidx, endidx ) 
 
 
 	def do_stat (self, line) :
@@ -169,20 +192,28 @@ class SatoriShell (cmd.Cmd) :
 				return
 
 		for k in target.keys() :
-
 			if k != 'content' :
 				print  "	%s : %s" % ( k, target[k] ) 
 
 
-
 	def do__keys (self, line) :
 		# """Debugging command. Shows the "working directory's" dictionary keys"""
-		
-		print self.__wd.keys()
+		for k in self.__wd.keys() :
+			print "	%s" % k
+
+
+	def do__value (self, line) :
+		# """Debugging command. Shows the "working directory's" dictionary keys"""
+		key = line.strip()
+		try :
+			ret = self.__wd[key]
+			print "	%s" % ret
+		except :
+			print "No such key..."
+
 
 	def do__trace_cd (self, line) :
 		# """Debugging command. Shows the "cd stack-trace" """
-
 		print [x['filename'] for x in self.cd_stack]
 
 

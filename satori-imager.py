@@ -64,7 +64,11 @@ if __name__ == "__main__" :
 
 	parser.add_argument( '--exclude', '-x', help = 'Select directories to be Excluded', nargs = '+', type = str, default = [] )
 	parser.add_argument( '--include', '-i', help = 'Select directories to be Included', nargs = '+', type = str, default = [] )
+
+	# exclude_group = parser.add_mutually_exclusive_group()
 	parser.add_argument( '--clear-excluded', '-c', help = 'Clear default excluded directories', action = 'store_true', default = False)
+	# exclude_group.add_argument( '--clear-included', help = 'Exclude all directories', action = 'store_true', default = False)
+
 	parser.add_argument( '--show-excluded', help = 'Show excluded directories and exit', action = 'store_true', default = False)
 
 	args = parser.parse_args()
@@ -125,6 +129,7 @@ if __name__ == "__main__" :
 		maker.__modes.append( 'hash' )
 		filename += '_HASH'
 
+		__log.info( "Enabled Modes: %s" % maker.__modes.join(', ') )
 
 
 
@@ -143,7 +148,7 @@ if __name__ == "__main__" :
 		__log.info( "* Thread number incorrect! Using single-threading. *" )
 		args.threads = 1
 	# else :
-		# __log.info( "* Using %d Threads *" % args.threads )
+	__log.info( "* Using %d Threads *" % args.threads )
 
 	maker.__threads = args.threads
 
@@ -161,21 +166,11 @@ if __name__ == "__main__" :
 	includes = set(args.include)
 
 
-	double_types = excludes & includes
-	if len(double_types) != 0 :
-		__log.critical( 'Those directories where both "included" and "excluded" :')
-		for dirs in double_types :
-			__log.critical( '-> %s' % dirs )
-		__log.critical('Exiting...')
-		sys.exit(2)
-
 	if args.clear_excluded :
 		maker.__excludes = set()
 
 	maker.__excludes = maker.__excludes | excludes
 	maker.__excludes = maker.__excludes - includes
-
-
 
 	if args.show_excluded :
 		if len(maker.__excludes) == 0 :
@@ -185,7 +180,7 @@ if __name__ == "__main__" :
 			for excl in maker.__excludes :
 				__log.critical( '-> %s' % excl )
 
-		__log.error( "Directories/Files ALWAYS excluded (error prone) :" )
+		__log.error( "Directories/Files ALWAYS excluded (failsafe) :" )
 		for excl in maker.hard_excludes :
 			__log.error( '-> %s' % excl )
 		sys.exit(0)
