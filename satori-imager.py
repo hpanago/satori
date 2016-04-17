@@ -129,7 +129,7 @@ if __name__ == "__main__" :
 		maker.__modes.append( 'hash' )
 		filename += '_HASH'
 
-		__log.info( "Enabled Modes: %s" % maker.__modes.join(', ') )
+	__log.info( "Enabled Modes: %s" % ', '.join( maker.__modes ) )
 
 
 
