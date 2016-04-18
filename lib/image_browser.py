@@ -141,7 +141,7 @@ class SatoriShell (cmd.Cmd) :
 			if not d :
 				continue 
 
-			if d == '.' :	# needs regex fix
+			if d == '.' :
 				continue
 			
 			if d == '..' :
