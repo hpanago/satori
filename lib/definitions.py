@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 
 program_name = 'Satori (悟り)'
-version = '0.05'
+version = '0.06'
 description = '''
 
 '''

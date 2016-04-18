@@ -2,6 +2,7 @@
 import os
 
 import difflib
+# from difflib_data import *
 import logging as log
 
 from lib.definitions import meta_templates, meta_tags
@@ -75,16 +76,19 @@ def reportDiff(entry, diff_type, f1 = '', f2 = '') :
 
 
 
-	if diff_type == tags[0] :	# content
-		__logger.warning( templates['content'].format( full_path ) )
-		if 'text' in f1['content'] :
-			diff = difflib.ndiff( f1['content'], f2['content'] )
-
-		try:
-			while 1:
-				__logger.info( diff.next() )
-		except:
-			pass
+	# if diff_type == tags[0] :	# content
+	# 	__logger.warning( templates['content'].format( full_path ) )
+	if 'text' in f1['type'] :
+		differ = difflib.Differ()
+		f1_lines = f1['content'].decode('base64').splitlines()
+		f2_lines = f2['content'].decode('base64').splitlines()
+		diff = differ.compare( f1_lines, f2_lines )
+		__logger.info( '\n'.join( diff ) )
+		# try:
+		# 	while 1:
+		# 		__logger.info( diff.next() )
+		# except:
+		# 	pass
 
 
 
@@ -94,8 +98,10 @@ def diffFile(file1, file2) :
 
 	full_path = file1['path'] + os.sep + file1['filename']
 
-	for tag in tags[1:] :	# exclude content
-		if file1[tag] == __NA or file2[tag] == __NA :
+	for tag in tags[:] :	# exclude content
+		__logger.debug( 'Checking files %s in %s' % ( file1['filename'], file1['path'] ) )
+		if file1[tag] == __NA or file2[tag] == __NA :	# make it better by checking both type groups
+
 			continue
 		if file1[tag] != file2[tag] :
 			reportDiff (full_path, tag, file1, file2)

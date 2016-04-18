@@ -144,6 +144,7 @@ def create_file_obj(full_path, name, fobj) :
 	fobj['privileges'] = str( oct( stat_obj[ST_MODE] ) )
 	fobj['type'] = mime
 	fobj['SHA2'] = __NA
+	fobj['content'] = __NA
 
 	if S_ISLNK(stat_obj.st_mode) :
 		return fobj

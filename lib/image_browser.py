@@ -127,45 +127,75 @@ class SatoriShell (cmd.Cmd) :
 		return self.complete_cd ( text, line, begidx, endidx ) 
 
 
-
 	def do_cd (self, line) :
-		"""	Typical UNIX command. Changes 'Current working directory'. Arguments such as '../' can also be used."""
-		f = line.strip()
+
+		f = line.strip().split()
 		if not f :
-			return 
-
-		if re.match(self.dir_regex, f) :
-			bt_len = f.count('..') + 1
-			wd = self.__wd
-
-			for i in range(bt_len) :
-
-				if len(self.cd_stack) > 0 :
-					wd = self.cd_stack.pop()
-				else :
-					wd = None
-
-			if wd == None :
-				self.__wd = self.__base
-			else :
-				self.__wd = wd
-
-			self.change_prompt(self.__wd)
 			return
+		target = f[0]
+		dirs = re.split('\/+', target)
+		print dirs
 
-		if f in self.__wd['content'].keys() :
+		wd = self.__wd
+		for d in dirs :
+			if not d :
+				continue 
 
-			if self.__wd['content'][f]['type'] == 'directory' :
-				self.__wd = self.__wd['content'][f]
-				self.cd_stack.append(self.__wd)
+			if d == '.' :	# needs regex fix
+				continue
+			
+			if d == '..' :
+				try :
+					wd = self.cd_stack.pop()
+				except :
+					pass
+				continue
 
-				self.change_prompt(self.__wd)
+			if self.exists( d ) and wd['content'][d]['type'] == 'directory' :
+				self.cd_stack.append(wd)
+				wd = wd['content'][d]
+				print d
 
-			else :
-				print "	Can't 'cd' to '%s', not a directory." % self.__wd['content'][f]['filename']
+		self.__wd = wd
+		self.change_prompt(self.__wd)
+ 		return
 
-		else :
-			print "	cCan't 'cd' to '%s', directory doesn't exist." % f
+	# def do_cd (self, line) :
+	# 	"""	Typical UNIX command. Changes 'Current working directory'. Arguments such as '../' can also be used."""
+	# 	f = line.strip()
+ 
+
+
+	# 		wd = self.__wd
+
+	# 		for i in range(bt_len) :
+
+	# 			if len(self.cd_stack) > 0 :
+	# 				wd = self.cd_stack.pop()
+	# 			else :
+	# 				wd = None
+
+	# 		if wd == None :
+	# 			self.__wd = self.__base
+	# 		else :
+	# 			self.__wd = wd
+
+	# 		self.change_prompt(self.__wd)
+	# 		return
+
+	# 	if f in self.__wd['content'].keys() :
+
+	# 		if self.__wd['content'][f]['type'] == 'directory' :
+	# 			self.__wd = self.__wd['content'][f]
+	# 			self.cd_stack.append(self.__wd)
+
+	# 			self.change_prompt(self.__wd)
+
+	# 		else :
+	# 			print "	Can't 'cd' to '%s', not a directory." % self.__wd['content'][f]['filename']
+
+	# 	else :
+	# 		print "	Can't 'cd' to '%s', directory doesn't exist." % f
 
 
 	def complete_cd (self, text, line, begidx, endidx) :
@@ -205,6 +235,9 @@ class SatoriShell (cmd.Cmd) :
 	def do__value (self, line) :
 		# """Debugging command. Shows the "working directory's" dictionary keys"""
 		key = line.strip()
+		if self.__wd[ 'type' ] == 'directory' and key == 'content' :
+			self.do_ls('')
+			return
 		try :
 			ret = self.__wd[key]
 			print "	%s" % ret
