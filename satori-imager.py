@@ -190,3 +190,4 @@ if __name__ == "__main__" :
 	fs = maker.create_Image( os_def_name )
 	__log.warning( 'Image generated! Creating File...' )
 	io.saveImage( outfile, fs, args.type )
+
