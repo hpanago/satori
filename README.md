@@ -20,7 +20,7 @@ It is named after the spontaneous feeling of absolute knowledge, an analyst feel
 
 # Suite Description
 <p>
-###Satori has 3 basic tools:
+###Satori has 3 basic tools (and 1 that is not that basic!):
 ####<i>satori-imager</i>
 
   <b>Satori Imager</b> creates images of a File System saving key elements for each file like: _filename_(duh!), _privileges_, _size_, _type_, _text content_ and _hash_ (if chosen), while maintaining the File System's tree-like structure.
@@ -76,6 +76,9 @@ There are even features for hash comparison of binaries (backdoored /bin/ files)
 <p><p><p>
 Well, while *Satori* doesn't reveal _vulnerabilities_ or _misconfiguration_, it gives you a place to start by showing you all the "*_Deviations_*" from the normal. And *Deviation* is the magic word in forensics!
 <p><p><br>
+
+
+
 
 Satori is in the public domain. Use it and/or change it freely.
 
