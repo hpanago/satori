@@ -1,7 +1,8 @@
 #-*- coding: utf-8 -*-
 import os
-
+import sys
 import difflib
+import re
 # from difflib_data import *
 import logging as log
 
@@ -137,7 +138,7 @@ def diffFolder(folder1, folder2) :
 
 
 
-def diffSystem(sys1, sys2) :
+def diffSystem(sys1, sys2, root_dir) :
 
 	meta1 = sys1['meta']
 	meta2 = sys2['meta']
@@ -146,6 +147,30 @@ def diffSystem(sys1, sys2) :
 
 	__logger.info( '\n' )
 
+
+	root_pathlist = re.split( '\/+', root_dir )
+
 	sys1 = sys1['system']
 	sys2 = sys2['system']
+
+	for dir_ in root_pathlist :
+
+		if not dir_ :
+			continue
+
+		try :
+			sys1 = sys1['content'][ dir_ ]
+		except :
+			__logger.critical( "Directory '%s' does not exist in Original Image" % os.sep.join(root_pathlist) )
+			sys.exit(1)
+		try :
+			sys2 = sys2['content'][ dir_ ]
+		except :
+			__logger.critical( "Directory '%s' does not exist in Given Image" % os.sep.join(root_pathlist) )
+			sys.exit(1)
+
+		# sys2 = sys2['content'][ dir_ ]
+
+
 	diffFile(sys1, sys2)
+

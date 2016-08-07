@@ -27,6 +27,9 @@ if __name__ == "__main__" :
 	parser.add_argument( 'original', help = "Satori image to be treated as 'original'", type = str )
 	parser.add_argument( 'subject', help = "Satori image to be examined", type = str )
 
+	parser.add_argument( 'directory', help = 'Filesystem directory to start the diffing',\
+										type = str, default = '/' )
+
 	parser.add_argument( '--type', '-t', help = 'Choose the file type of the images saved/loaded',\
 										type = str, choices = ['pickle', 'json', 'sqlite'], default = 'json')
 
@@ -77,6 +80,9 @@ if __name__ == "__main__" :
 		io.__use_gzip = True
 
 
+	root_dir = args.directory
+	__log.info( "Diffing will traverse the '%s' directory" % root_dir )
+
 
 	image1 = io.loadImage( args.original, args.type )
 	if not image1 :
@@ -88,6 +94,7 @@ if __name__ == "__main__" :
 		__log.critical( defs.cant_read_file % args.subject )
 		sys.exit(-1)
 
-		
-	differ.diffSystem( image1, image2 )
+
+
+	differ.diffSystem( image1, image2, root_dir )
 	__log.warning( "\n" )
