@@ -94,10 +94,7 @@ class SatoriShell (cmd.Cmd) :
 	def do_info (self, line) :
 		"""	Prints out Information about the Satori Image being browsed."""
 		print
-		print "Image Info:"
-		for k in meta_tags :
-			if k != 'program' :
-				print ( "	"+meta_templates[k]. format( self.__image['meta'][k] ) ).encode('utf8')
+		print get_info_string( self.__image )
 		print
 
 
@@ -253,6 +250,17 @@ class SatoriShell (cmd.Cmd) :
 	def emptyline (self) :
 		return
 
+
+
+
+def get_info_string( image ) :
+
+	ret = ''
+	ret += "Image Info:" + '\n'
+	for k in meta_tags :
+		if k != 'program' :
+			ret += ( "	"+meta_templates[k]. format( image['meta'][k] ) ).encode('utf8') + '\n'
+	return ret
 
 
 if __name__ == "__main__" :		# TODO standalone module

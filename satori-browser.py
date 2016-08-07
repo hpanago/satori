@@ -5,6 +5,8 @@ import argparse
 import lib.image_io as io
 import logging as log
 
+import sys
+
 import lib.definitions as defs
 from lib.image_browser import *
 
@@ -30,6 +32,9 @@ if __name__ == "__main__" :
 
 	parser.add_argument( '--no-gzip', '-ng', help = 'Image IO will *NOT* use gzip', action = 'store_true', default = False)
 
+	parser.add_argument( '--info', '-i', help = "Display the Image's info and exit",\
+										action = 'store_true', default = False)
+
 
 	args = parser.parse_args()
 
@@ -50,13 +55,11 @@ if __name__ == "__main__" :
 
 	print 'Loading Image...'
 	image = io.loadImage( args.image, args.type )
-	# image = None
 	print
-	# print 'Ready!'
+
+	if args.info :
+		print get_info_string( image )
+		sys.exit(0)
 
 	satori_shell = SatoriShell(image)
 	satori_shell.cmdloop(  )
-	# while True :
-	# 	inp = raw_input ( '%s $ ' % 'satori' )
-	# 	if inp == 'exit' :
-	# 		break
