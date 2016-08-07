@@ -8,7 +8,7 @@ import os
 import socket
 from datetime import date
 import getpass
-# import magic
+import magic
 
 # import multiprocessing as mproc
 import threading as thrd
@@ -125,7 +125,11 @@ def create_file_obj(full_path, name, fobj) :
 		return fobj
 
 	if 'type' in __modes :
-		mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()	# main.py: Python script, ASCII text executable		# sample output
+		# mime = os.popen( "file '{0}' ".format( full_name ) ).read().split( ':' )[-1].strip()	# main.py: Python script, ASCII text executable		# sample output
+		try :
+			mime = magic.from_file( full_name )
+		except :
+			mime = 'directory'
 		# mime = magic_obj.file( full_name )
 		__logger.debug( "File '%s' of type : %s" % ( full_name, mime ) )
 

@@ -139,7 +139,15 @@ if __name__ == "__main__" :
 
 	stdin, stdout, stderr = ssh.exec_command( rem_command )
 
-	__log.info( "Executing... ")
+	__log.warn( "Executing... ")
+	__log.info( "Output from Remote Execution:" )
+
+	__log.info( defs.bash_l_gray )
+
+	for line in iter(lambda: stderr.readline(2048), ""):
+		__log.info( line[:-1] )	# last char is the next_line
+
+	__log.info( defs.bash_n_color )
 
 	exit_status = stdout.channel.recv_exit_status()
 
@@ -147,6 +155,7 @@ if __name__ == "__main__" :
 	__log.debug( new_contents )
 
 	output = list(set(new_contents) - set(old_contents))[0]
+
 
 	if len(output) == 0 :
 		__log.critical( 'No output file. Something went wrong. Exiting...' )

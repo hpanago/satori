@@ -47,3 +47,10 @@ Version %s
 ''' % ( banner, program_name, version )
 
 cant_read_file = "	[X] File '%s' could not be read. Quiting..."
+
+
+
+bash_n_color="\033[0m"
+bash_l_gray="\033[0;37m"
+
+#="\[\033[0;37m\]"
