@@ -34,6 +34,32 @@ usage: satori-imager.py [-h] [--type {pickle,json,sqlite}] [--no-gzip]
 Crawls the whole filesystem and creates an image of it to a file.
 ```
 <p><p><br>
+
+####<i>satori-remoter</i>
+
+Now imagine the <b>Satori Imager</b> all via SSH. This is <b>Satori Remoter</b>
+```
+$ ./satori-remote.py user@10.0.2.15 -v --argument '--threads 4 -v'
+Password: 
+
+Remote directory is '/tmp/'
+Satori will be copied from '/root/satori'
+Attempting SSH connection to '10.0.2.15' as user 'user'
+Connection Established!
+SFTP channel opened!
+Satori folder copied at remote location '/tmp/'
+The command to run in remote host is:
+'chmod 775 /tmp//satori; cd /tmp//satori; ./satori-imager.py --threads 4 -v '
+Executing... 
+Getting remote file '/tmp//satori/Linux-4.6.0-kali1-amd64-x86_64-with-Kali-kali-rolling-kali-rolling.jsn.gz'
+Done!
+Satori image is located at '/root/satori/Linux-4.6.0-kali1-amd64-x86_64-with-Kali-kali-rolling-kali-rolling.jsn.gz'
+Remote copied files purged!
+SSH session closed!
+```
+Gets the image via SFTP and optionally purges the Satori executables from the target machine
+
+<p><p><br>
 ####<i>satori-browser</i>
 
   <b>Satori Browser</b> is a tool that loads those image files and spawns a custom UNIX-like shell in the underlying File System. The user can freely '*ls*', '*cd*' and '*stat*' all files in the FileSystem image.<p>
