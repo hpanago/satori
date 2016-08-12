@@ -17,8 +17,9 @@ color['END'] = '\033[00m'
 
 class SatoriShell (cmd.Cmd) :
 
-	commands = [ 'cd', 'ls', 'stat', 'cat', 'file', 'hash', 'pwd', 'info' ]
+	# commands = [ 'cd', 'ls', 'stat', 'cat', 'file', 'hash', 'pwd', 'info' ]
 	debugs = [ 'keys', 'value' ]
+
 	prompt_format = color['gray'] + "{{Satori}}" + color['END'] + ' %s%s@%s%s ' + color['blue'] + '{0} %s '+color['END']		# "{Satori} john@Lucinda / $ "
 	prompt = prompt_format.format('/')
 
@@ -47,7 +48,7 @@ class SatoriShell (cmd.Cmd) :
 
 		col = color['green']
 		symb = '$'
-		if self.__user == 'root' :
+		if self.__image['meta']['UID'] == 0 :
 			col = color['red']
 			symb = '#'
 
@@ -66,6 +67,10 @@ class SatoriShell (cmd.Cmd) :
 
 	def do_cat (self, line) :
 		"""	Typical UNIX command. Catenates the contents of text file"""
+		if "text" not in self.__image['meta']['modes'] :
+			print "Image file does not support 'cat'. File contents are not saved."
+			return
+
 		arg = line.split()
 		begin = "-----BEGIN '{0}'-----"
 		ending = "-----END   '{0}'-----"
@@ -104,6 +109,13 @@ class SatoriShell (cmd.Cmd) :
 
 		target = self.__wd
 		arg = line.split()
+
+		if '-l' in arg :
+			_l = True
+			arg.remove('-l')
+		else :
+			_l = False
+
 		if len(arg) > 0 :
 
 			if self.exists (arg[0]) :
@@ -113,10 +125,21 @@ class SatoriShell (cmd.Cmd) :
 
 
 		if target['type'] == 'directory' :
-			print "	".join( target['content'].keys() )
+			files = target['content'].keys()
+			if not _l :
+				print "	".join( files )
+
+			else :
+				print "	{0:16}	{1:16}	{2:8}	{3:8}	{4:8}".format ( "Filename", "Size", "Privs", "User", "Group" )
+				for k in files :
+					f = target['content'][k]
+					print "	{0:16}	{1:16}	{2:>8}	{3:<8}	{4:<8}".format\
+							 ( f['filename'], f['size'], f['privileges'], f['owner'], f['group'] )
+
 		else :
 			print "	'%s' is not a directory" % target['filename'] 
 		return
+
 
 
 
@@ -156,43 +179,6 @@ class SatoriShell (cmd.Cmd) :
 		self.__wd = wd
 		self.change_prompt(self.__wd)
  		return
-
-	# def do_cd (self, line) :
-	# 	"""	Typical UNIX command. Changes 'Current working directory'. Arguments such as '../' can also be used."""
-	# 	f = line.strip()
- 
-
-
-	# 		wd = self.__wd
-
-	# 		for i in range(bt_len) :
-
-	# 			if len(self.cd_stack) > 0 :
-	# 				wd = self.cd_stack.pop()
-	# 			else :
-	# 				wd = None
-
-	# 		if wd == None :
-	# 			self.__wd = self.__base
-	# 		else :
-	# 			self.__wd = wd
-
-	# 		self.change_prompt(self.__wd)
-	# 		return
-
-	# 	if f in self.__wd['content'].keys() :
-
-	# 		if self.__wd['content'][f]['type'] == 'directory' :
-	# 			self.__wd = self.__wd['content'][f]
-	# 			self.cd_stack.append(self.__wd)
-
-	# 			self.change_prompt(self.__wd)
-
-	# 		else :
-	# 			print "	Can't 'cd' to '%s', not a directory." % self.__wd['content'][f]['filename']
-
-	# 	else :
-	# 		print "	Can't 'cd' to '%s', directory doesn't exist." % f
 
 
 	def complete_cd (self, text, line, begidx, endidx) :
