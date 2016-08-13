@@ -9,6 +9,9 @@ import logging as log
 from lib.definitions import meta_templates, meta_tags
 # from lib.definitions import file_tags as tags
 
+from tree import Node as DiffNode
+from termcolor import colored 
+
 tags = [ 'content', 'path', 'filename', 'type', 'size', 'privileges', 'owner', 'group', 'SHA2' ]
 
 criticals = [ 'privileges', 'owner', 'group' ]
@@ -16,6 +19,8 @@ content_alterations = ['content', 'size', 'SHA2']
 metadata_alterations = ['owner', 'group', 'privileges', 'type']
 
 
+DIFF_TREE = None
+CUR_NODE = None
 
 __NA = 'N/A'
 __non_exist = 'non-existent'
@@ -91,38 +96,48 @@ def reportDiff( entry, diff_list, f1 = '', f2 = '' ) :
 	__logger.debug( '	reportDiff( %s, %s, f1, f2 )' % (entry, diff_list) )
 
 	full_path = ( entry )
+	entry = entry.split( os.sep )[-1]
 
+	node = None
 	for diff_type in diff_list :
 
 		__logger.debug( "Now Reporting diff on '%s'" % diff_type )
 
 		log = __getLogMethod( diff_type )
 		if diff_type == __not_original :
+
+			node = DiffNode( colored( entry, 'green' ) )
+
 			log( templates[ diff_type ].format( full_path ) )
 			continue
 			# return
 
 		elif diff_type == __non_exist :
+
+			node = DiffNode( colored( entry, 'red' ) )
+
 			log( templates[ diff_type ].format( full_path ) )
 			continue
 			# return
 
 
 		if diff_type in metadata_alterations :		
+			node = DiffNode( colored( entry, 'white', 'on_yellow', attrs=['bold',] ) )
 			log( templates[ diff_type ].format( full_path, f1[diff_type], f2[diff_type] ) )
 
 
 
 		if diff_type in content_alterations :
-
+			node = DiffNode( colored( entry, 'yellow' ) )
 			log( templates[ diff_type ].format( full_path, f1[diff_type], f2[diff_type] ) )
 
 			if diff_type == 'content' :
 				contentDiff ( f1, f2 )
 			# break
 
-
-
+	global CUR_NODE
+	if node :
+		CUR_NODE.add_child(node)
 
 
 
@@ -133,7 +148,7 @@ def diffFile(file1, file2) :
 	full_path = file1['path'] + os.sep + file1['filename']
 	diff_list = []
 
-	for tag in tags[:] :	# exclude content
+	for tag in tags[1:] :	# exclude content
 		__logger.debug( "Checking files %s in %s for diff on '%s'" % ( file1['filename'], file1['path'], tag ) )
 
 		if file1[tag] == __NA or file2[tag] == __NA :	# make it better by checking both type groups
@@ -142,11 +157,10 @@ def diffFile(file1, file2) :
 		if file1[tag] != file2[tag] :
 			diff_list.append(tag)
 
-	reportDiff (full_path, diff_list, file1, file2)
-
 	if file1['type'] == 'directory' :
-
 		diffFolder( file1, file2 )
+
+	reportDiff (full_path, diff_list, file1, file2)
 
 
 
@@ -159,7 +173,14 @@ def diffFolder( folder1, folder2 ) :
 
 	diffs = loc1 - loc2
 
-	# diff_list = []
+	global CUR_NODE
+	global DIFF_TREE
+
+	prev_node = CUR_NODE
+	node = DiffNode( folder1['filename'] )
+
+	CUR_NODE.add_child( node )
+	CUR_NODE = node
 
 	for diff in diffs :
 		full_path = base_path + diff
@@ -175,6 +196,11 @@ def diffFolder( folder1, folder2 ) :
 	for key in (loc1 & loc2) :
 		diffFile( folder1['content'][key], folder2['content'][key] )
 
+	temp_node = CUR_NODE
+	CUR_NODE = prev_node
+
+	if temp_node.is_leaf() :
+		CUR_NODE.delete_child( temp_node )
 
 
 
@@ -223,4 +249,14 @@ def diffSystem(sys1, sys2, root_dir) :
 			__logger.critical( "Directory '%s' does not exist in Given Image" % os.sep.join(root_pathlist) )
 			sys.exit(1)
 
+
+	global CUR_NODE
+	global DIFF_TREE
+
+	DIFF_TREE = DiffNode( "Diff Tree" )
+
+	CUR_NODE = DIFF_TREE
+
 	diffFile(sys1, sys2)
+
+	print DIFF_TREE
