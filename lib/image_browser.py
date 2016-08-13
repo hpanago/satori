@@ -130,11 +130,15 @@ class SatoriShell (cmd.Cmd) :
 				print "	".join( files )
 
 			else :
-				print "	{0:16}	{1:16}	{2:8}	{3:8}	{4:8}".format ( "Filename", "Size", "Privs", "User", "Group" )
+				print "	{0:20}  |  {1:>10}	{2:>11}	{3:8}	{4:8}	{5:8}".format\
+				( "Filename", "Size", "Privileges", "User", "Group", "Filetype" )
+				print "	{0:20}  |  {1:10}	{2:11}	{3:8}	{4:8}	{5:8}".format\
+				( "=" * 20,"=" * 10,"=" * 11,"=" * 8,"=" * 8, "=" * 8) 
+
 				for k in files :
 					f = target['content'][k]
-					print "	{0:16}	{1:16}	{2:>8}	{3:<8}	{4:<8}".format\
-							 ( f['filename'], f['size'], f['privileges'], f['owner'], f['group'] )
+					print "	{0:20}  |  {1:10}	{2:>11}	{3:<8}	{4:<8}	{5:8}".format\
+							 ( f['filename'], f['size'], f['privileges'], f['owner'], f['group'], f['type'] )
 
 		else :
 			print "	'%s' is not a directory" % target['filename'] 

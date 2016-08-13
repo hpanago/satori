@@ -10,8 +10,8 @@ from lib.definitions import meta_templates, meta_tags
 # from lib.definitions import file_tags as tags
 
 tags = [ 'content', 'path', 'filename', 'type', 'size', 'privileges', 'owner', 'group', 'SHA2' ]
-criticals = tags[5 : 7]
 
+criticals = [ 'privileges', 'owner', 'group' ]
 content_alterations = ['content', 'size', 'SHA2']
 metadata_alterations = ['owner', 'group', 'privileges', 'type']
 
@@ -60,7 +60,7 @@ def reportMeta(meta, original = False) :
 	__logger.info( '==================================================' )
 
 
-def __getLogMethod(diff_type) :
+def __getLogMethod( diff_type ) :
 
 	if diff_type == __not_original :
 		log = __logger.info
@@ -108,20 +108,20 @@ def reportDiff( entry, diff_list, f1 = '', f2 = '' ) :
 			# return
 
 
-		for tag in content_alterations :
-
-			if diff_type == tag :
-
-				log( templates[ diff_type ].format( full_path, f1[diff_type], f2[diff_type] ) )
-
-				if tag == 'content' :
-					contentDiff ( f1, f2 )
-				break
+		if diff_type in metadata_alterations :		
+			log( templates[ diff_type ].format( full_path, f1[diff_type], f2[diff_type] ) )
 
 
-		if diff_type in metadata_alterations :		# TODO: MAke this code more verbose and less automated
+
+		if diff_type in content_alterations :
 
 			log( templates[ diff_type ].format( full_path, f1[diff_type], f2[diff_type] ) )
+
+			if diff_type == 'content' :
+				contentDiff ( f1, f2 )
+			# break
+
+
 
 
 
