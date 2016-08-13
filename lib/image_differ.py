@@ -49,6 +49,7 @@ meta_templates['subject'] = "Subject System Image:"
 
 
 
+
 def reportMeta(meta, original = False) :
 
 	__logger.info( '==================================================' )
@@ -177,7 +178,7 @@ def diffFolder( folder1, folder2 ) :
 	global DIFF_TREE
 
 	prev_node = CUR_NODE
-	node = DiffNode( folder1['filename'] )
+	node = DiffNode( base_path )
 
 	CUR_NODE.add_child( node )
 	CUR_NODE = node
@@ -253,7 +254,7 @@ def diffSystem(sys1, sys2, root_dir) :
 	global CUR_NODE
 	global DIFF_TREE
 
-	DIFF_TREE = DiffNode( "Diff Tree" )
+	DIFF_TREE = DiffNode( "	"+"="*20+"	Diff Tree	"+"="*20 )
 
 	CUR_NODE = DIFF_TREE
 
