@@ -54,8 +54,9 @@ meta_templates['subject'] = "Subject System Image:"
 
 def reportMeta(meta, original = False) :
 
-	# __logger = log.getLogger( "meta" )
-	# __logger = log.setLevel(logging.)
+	__logger = log.getLogger( '__main__' )
+	# ch = log.StreamHandler(sys.stderr)
+	# __logger = log.setHandler( ch )
 
 	__logger.info( '==================================================' )
 	if original :
@@ -108,7 +109,7 @@ def reportDiff( entry, diff_list, f1 = '', f2 = '' ) :
 
 	diff_list_str = ', '.join(diff_list)
 	# diff_list_str = colored( diff_list_str, attrs=['underline',] )
-	diff_list_str = ' - [%s]' % diff_list_str
+	diff_list_str = '  -- [%s]' % diff_list_str
 	# diff_list_str = colored( ' - [','white' ) + '%s] ' % diff_list_str
 
 	for diff_type in diff_list :
