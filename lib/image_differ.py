@@ -26,8 +26,10 @@ __NA = 'N/A'
 __non_exist = 'non-existent'
 __not_original = 'not-original'
 
-__logger = log.getLogger( '__main__' )
-#__logger.basicConfig(format = '\t+ %(message)s')
+__logger = log.getLogger( __name__ )
+
+log.basicConfig(format = '%(message)s', stream = sys.stdout)
+__logger.setLevel( log.INFO )
 
 __file_tmpl = "File '{0}'"
 __dir_tmpl = "Directory '{0}'"
@@ -51,6 +53,9 @@ meta_templates['subject'] = "Subject System Image:"
 
 
 def reportMeta(meta, original = False) :
+
+	# __logger = log.getLogger( "meta" )
+	# __logger = log.setLevel(logging.)
 
 	__logger.info( '==================================================' )
 	if original :
@@ -100,6 +105,12 @@ def reportDiff( entry, diff_list, f1 = '', f2 = '' ) :
 	entry = entry.split( os.sep )[-1]
 
 	node = None
+
+	diff_list_str = ', '.join(diff_list)
+	# diff_list_str = colored( diff_list_str, attrs=['underline',] )
+	diff_list_str = ' - [%s]' % diff_list_str
+	# diff_list_str = colored( ' - [','white' ) + '%s] ' % diff_list_str
+
 	for diff_type in diff_list :
 
 		__logger.debug( "Now Reporting diff on '%s'" % diff_type )
@@ -122,14 +133,15 @@ def reportDiff( entry, diff_list, f1 = '', f2 = '' ) :
 			# return
 
 
+
 		if diff_type in metadata_alterations :		
-			node = DiffNode( colored( entry, 'white', 'on_yellow', attrs=['bold',] ) )
+			node = DiffNode( colored( entry + diff_list_str, 'white', 'on_yellow', attrs=['bold',] ) )
 			log( templates[ diff_type ].format( full_path, f1[diff_type], f2[diff_type] ) )
 
 
 
 		if diff_type in content_alterations :
-			node = DiffNode( colored( entry, 'yellow' ) )
+			node = DiffNode( colored( entry + diff_list_str, 'yellow' ) )
 			log( templates[ diff_type ].format( full_path, f1[diff_type], f2[diff_type] ) )
 
 			if diff_type == 'content' :
@@ -211,7 +223,7 @@ def __init_diff_tags() :
 		metadata_alterations.remove('type')
 
 	if 'hash' not in enabledModes :
-		metadata_alterations.remove('SHA2')
+		content_alterations.remove('SHA2')
 
 
 
@@ -260,4 +272,4 @@ def diffSystem(sys1, sys2, root_dir) :
 
 	diffFile(sys1, sys2)
 
-	print DIFF_TREE
+	print >> sys.stderr, DIFF_TREE

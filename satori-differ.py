@@ -14,7 +14,7 @@ import lib.helpers.signal_handler
 
 header = defs.header.format( "OS filesystem image Difference Finder" )
 
-log.basicConfig(format = "%(message)s")
+# log.basicConfig(format = "%(message)s")
 
 __log = log.getLogger( __name__ )
 
@@ -40,6 +40,11 @@ if __name__ == "__main__" :
 	verb.add_argument( '--debug' , '-d', help = 'debugging mode', action = 'store_true', default = False )
 	verb.add_argument( '--quiet', '-q' , help = 'quiet mode (show only critical differences)', action = 'store_true', default = False )
 
+	out = parser.add_mutually_exclusive_group()
+	out.add_argument( '--tree', help = 'Prints a "git-flavoured" Diff Tree for the Filesystems (/dev/stderr)', action = 'store_true', default = False )
+	out.add_argument( '--log', help = 'Prints a "greppable" log of the Differences for the Filesystems (/dev/stdout)', action = 'store_true', default = True )
+	out.add_argument( '--all', help = 'Prints both a log (/dev/stdout) and a Diff Tree (dev/stderr)', action = 'store_true', default = False )
+
 
 	args = parser.parse_args()
 
@@ -63,7 +68,8 @@ if __name__ == "__main__" :
 
 	'''	================================================ HEADER + INFO ================================================ '''
 
-	__log.warning(header)
+	__log.info(header)
+
 	if args.debug :
 		__log.debug("* Debugging mode *")
 	else :
