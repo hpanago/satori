@@ -9,7 +9,7 @@ import logging as log
 from lib.definitions import meta_templates, meta_tags
 # from lib.definitions import file_tags as tags
 
-from tree import Node as DiffNode
+from helpers.tree import Node as DiffNode
 from termcolor import colored 
 
 tags = [ 'content', 'path', 'filename', 'type', 'size', 'privileges', 'owner', 'group', 'SHA2' ]
