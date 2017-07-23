@@ -158,6 +158,7 @@ class SatoriShell (cmd.Cmd) :
 			return
 		target = f[0]
 		dirs = re.split('\/+', target)
+		#maybe this print statement and..
 		print dirs
 
 		wd = self.__wd
@@ -178,6 +179,7 @@ class SatoriShell (cmd.Cmd) :
 			if self.exists( d ) and wd['content'][d]['type'] == 'directory' :
 				self.cd_stack.append(wd)
 				wd = wd['content'][d]
+				#this one, could be removed, for a more bash-like shell?
 				print d
 
 		self.__wd = wd
