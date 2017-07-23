@@ -236,6 +236,9 @@ class SatoriShell (cmd.Cmd) :
 		# """Debugging command. Shows the "cd stack-trace" """
 		print [x['filename'] for x in self.cd_stack]
 
+	
+	def do_EOF (self, line):
+		return True
 
 	def emptyline (self) :
 		return
