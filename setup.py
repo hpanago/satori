@@ -19,7 +19,7 @@ dependency_links = [x.strip().replace('git+', '') for x in all_reqs if x.startsw
 
 setup(
     name='satori',
-    version='0.1',
+    version='0.01',
     description='A filesystem image suite',
     long_description=long_description,
     url='https://github.com/operatorequals/satori',
@@ -38,4 +38,11 @@ setup(
     install_requires=install_requires,
     dependency_links=dependency_links,
     author_email='john.torakis@gmail.com',
+    entry_points = {
+        'console_scripts' : [ "satori-browser=satori.satori-browser:main",
+                        "satori-differ=satori.satori-differ:main",
+                        "satori-imager=satori.satori-imager:main",
+                        "satori-remote=satori.satori-remote:main",
+                        ]
+                    }
 )
