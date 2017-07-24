@@ -39,10 +39,10 @@ setup(
     dependency_links=dependency_links,
     author_email='john.torakis@gmail.com',
     entry_points = {
-        'console_scripts' : [ "satori-browser=satori.satori-browser:main",
-                        "satori-differ=satori.satori-differ:main",
-                        "satori-imager=satori.satori-imager:main",
-                        "satori-remote=satori.satori-remote:main",
+        'console_scripts' : [ "satori-browser=satori.satori_browser:main",
+                        "satori-differ=satori.satori_differ:main",
+                        "satori-imager=satori.satori_imager:main",
+                        "satori-remote=satori.satori_remote:main",
                         ]
                     }
 )
